@@ -1,0 +1,5 @@
+.env
+venv
+auth/__pycache__
+Configuration/__pycache__
+Configuration/DbConection/__pycache__
