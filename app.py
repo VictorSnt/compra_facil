@@ -14,3 +14,5 @@ def index_page():
     families = fetch_all_prod_family()
 
     return render_template('index.html', prods=prods, groups=groups, families=families)
+
+app.run('127.0.0.1', 8000, True)
