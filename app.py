@@ -1,11 +1,15 @@
-from flask import Flask, render_template
+import json
+from flask import Flask, jsonify, render_template, request
+from flask_cors import CORS
 from services.fetch_services import (
     fetch_all_prods,
     fetch_all_prod_groups,
-    fetch_all_prod_family
+    fetch_all_prod_family,
+    filter_products
 )
 
 app = Flask(__name__)
+CORS(app)
 
 @app.route("/")
 def index_page():
@@ -15,4 +19,13 @@ def index_page():
 
     return render_template('index.html', prods=prods, groups=groups, families=families)
 
-app.run('127.0.0.1', 8000, True)
+@app.route("/lista_compras")
+def list_compras():
+
+    data = json.loads(request.args.get('data'))
+    
+    response = filter_products(data)
+    print(response)
+    return jsonify({'mensagem': 'Dados recebidos com sucesso'}), 200
+    
+app.run('127.0.0.1', 5000, True)
