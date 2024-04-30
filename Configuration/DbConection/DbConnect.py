@@ -1,6 +1,5 @@
 import psycopg2
 
-
 class DbConnection:
     def __init__(self, host: str, port: str, dbname: str, user: str, password: str):
         self.host = host
@@ -78,3 +77,10 @@ class DbConnection:
         except psycopg2.Error as e:
             self.error = f"Falha na execução da consulta: {e}"
             return 0
+    
+    def __enter__(self):
+        self.connect()
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        self.close_connection()

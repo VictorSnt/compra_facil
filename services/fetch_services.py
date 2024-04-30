@@ -1,58 +1,155 @@
+from datetime import datetime
 import json
+import re
+from typing import List
 from auth.database import database_auth
 
-def fetch_all_prod_family():
-    connection = database_auth()
-    connection.connect()
-    query = "SELECT idfamilia, dsfamilia FROM wshop.familia"
-    response = connection.execute_query(query)
-    connection.close_connection()
-    return response
+class DatabaseHandler:
+    @staticmethod
+    def execute_query(query):
+        with database_auth() as connection:
+            connection.connect()
+            response = connection.execute_query(query)
+            connection.close_connection()
+        return response
 
-def fetch_all_prod_groups():
-    connection = database_auth()
-    connection.connect()
-    query = "select idgrupo, nmgrupo from wshop.grupo"
-    response = connection.execute_query(query)
-    connection.close_connection()
-    return response
+class ProductFetcher:
+    @staticmethod
+    def fetch_all_prod_family():
+        return DatabaseHandler.execute_query("SELECT idfamilia, dsfamilia FROM wshop.familia")
 
-def fetch_all_prods():
-    connection = database_auth()
-    connection.connect()
-    query = "select iddetalhe, dsdetalhe from wshop.detalhe where stdetalheativo = true"
-    response = connection.execute_query(query)
-    connection.close_connection()
-    return response
+    @staticmethod
+    def fetch_all_prod_groups():
+        return DatabaseHandler.execute_query("SELECT idgrupo, nmgrupo FROM wshop.grupo")
 
-def parse_selected_items(selected_items):
-    return [json.loads(d.replace("'",'"')) for d in selected_items]
+    @staticmethod
+    def fetch_all_prods():
+        return DatabaseHandler.execute_query("SELECT iddetalhe, dsdetalhe FROM wshop.detalhe WHERE stdetalheativo = true")
 
-def build_query(groups, families):
-    group_values = ",".join([f"'{g['idgrupo']}'" for g in groups])
-    family_values = ",".join([f"'{f['idfamilia']}'" for f in families])
+class DataParser:
+    @staticmethod
+    def parse_selected_items(selected_items):
+        parsed_items = []
+        for item in selected_items:
+            try:
+                json_format = item.replace("'", '"')
+                parsed_item = json.loads(json_format)
+                parsed_items.append(parsed_item)
+            except json.JSONDecodeError:
+                regex = r'("[^"]*")([^"]*")'
+                json_corrected = re.sub(regex, r'\1', json_format)
+                input(json_corrected)
+                parsed_item = json.loads(json_corrected)
+                parsed_items.append(parsed_item)
+        return parsed_items
 
-    group_filter = f'prod.idgrupo in ({group_values})'
-    families_filter = f'det.idfamilia in ({family_values})'
-    
-    prod_filter = f'{group_filter} or {families_filter}' if groups and families else group_filter if groups else families_filter
+class ProductQueryBuilder:
+    @staticmethod
+    def build_products_query(groups, families):
+        group_values = ",".join([f"'{g['idgrupo']}'" for g in groups])
+        family_values = ",".join([f"'{f['idfamilia']}'" for f in families])
 
-    select_all = 'SELECT det.iddetalhe, det.cdprincipal, det.dsdetalhe from wshop.detalhe as det'
-    join = 'JOIN wshop.produto as prod on prod.idproduto = det.idproduto'
-    where = 'WHERE stdetalheativo = true AND'
+        group_filter = f'prod.idgrupo in ({group_values})'
+        families_filter = f'det.idfamilia in ({family_values})'
+        
+        prod_filter = f'{group_filter} or {families_filter}' if groups and families else group_filter if groups else families_filter
 
-    return f'{select_all} {join} {where} {prod_filter}'
+        select_all = 'SELECT det.iddetalhe, det.cdprincipal, det.dsdetalhe from wshop.detalhe as det'
+        join = 'JOIN wshop.produto as prod on prod.idproduto = det.idproduto'
+        where = 'WHERE stdetalheativo = true AND'
 
-def filter_products(data):
-    products = data['selectedProds']
-    groups = parse_selected_items(data['selectedGroups'])
-    families = parse_selected_items(data['selectedFamilies'])
-    
-    query = build_query(groups, families)
-    print(query)
-    connection = database_auth()
-    connection.connect()
-    response = connection.execute_query(query)
-    connection.close_connection()
-    
-    return response
+        return f'{select_all} {join} {where} {prod_filter}'
+
+class ProductFilter:
+    @staticmethod
+    def filter_products(data):
+        groups = DataParser.parse_selected_items(data['selectedGroups'])
+        families = DataParser.parse_selected_items(data['selectedFamilies'])
+        
+        query = ProductQueryBuilder.build_products_query(groups, families)
+        return DatabaseHandler.execute_query(query)
+
+class StockUpdater:
+    @staticmethod
+    def join_products_stock(products: List[dict]) -> List[dict]:
+        updated_products = []
+        stock_query = "SELECT qtestoque FROM wshop.estoque WHERE iddetalhe = '{}' ORDER BY dtreferencia DESC LIMIT 1"
+
+       
+        for product in products:
+            product_id = product['iddetalhe']
+            stock_response = DatabaseHandler.execute_query(stock_query.format(product_id))
+
+            if stock_response:
+                stock_quantity = stock_response[0]['qtestoque']
+                product['qtestoque'] = stock_quantity
+                updated_products.append(product)
+
+        return updated_products
+
+class DocumentInfoFetcher:
+    @staticmethod
+    def fetch_document_info(product_id):
+        doc_info_query = """
+            SELECT doc.iddocumento, doc.dtreferencia, doc.dtemissao 
+            FROM wshop.documen as doc
+            JOIN wshop.docitem AS docitem ON docitem.iddocumento = doc.iddocumento
+            WHERE docitem.iddetalhe = '{}'
+            AND doc.tpoperacao = 'C'
+            ORDER BY doc.dtreferencia DESC
+            LIMIT 1;
+        """
+        doc_info_result = DatabaseHandler.execute_query(doc_info_query.format(product_id))
+        return doc_info_result[0] if doc_info_result else None
+
+class SalesCalculator:
+    @staticmethod
+    def calculate_sales(product_id, dtreferencia):
+        sales_query = """
+            SELECT COALESCE(SUM(qtvenda), 0) as total FROM wshop.estoque
+            WHERE iddetalhe = '{}'
+            AND dtreferencia BETWEEN '{}' AND CURRENT_DATE
+        """
+        sales_result = DatabaseHandler.execute_query(sales_query.format(product_id, dtreferencia))
+        return sales_result[0]['total'] if sales_result else 0
+
+class PaymentFluxFetcher:
+    @staticmethod
+    def fetch_payment_flux(document_id):
+        payment_flux_query = """
+            SELECT dtemissao, dtvencimento FROM wshop.fluxo
+            WHERE iddocumento = '{}'
+        """
+        payment_flux_result = DatabaseHandler.execute_query(payment_flux_query.format(document_id))
+        return payment_flux_result
+
+class SalesUpdate:
+    @staticmethod
+    def join_product_sales(products: List[dict]) -> List[dict]:
+        updated_products = []
+        for prod in products:
+            product_id = prod['iddetalhe']
+            doc_info = DocumentInfoFetcher.fetch_document_info(product_id)
+            if not doc_info:
+                continue
+            
+            dtreferencia = doc_info['dtreferencia']
+            dtemissao = doc_info['dtemissao']
+            document_id = doc_info['iddocumento']
+            
+            shipping_days = (dtreferencia - dtemissao).days
+            sales_quant = SalesCalculator.calculate_sales(product_id, dtreferencia)
+            payment_flux = PaymentFluxFetcher.fetch_payment_flux(document_id)
+            
+            prazo = [(payment['dtvencimento'] - payment['dtemissao']).days for payment in payment_flux]
+            
+            prod['dtreferencia'] = dtreferencia.strftime('%d/%m/%Y')
+            prod['sales'] = sales_quant
+            prod['shipping_days'] = shipping_days
+            prod['payment'] = '/'.join(map(str, prazo))
+            
+            updated_products.append(prod)
+        
+        updated_products.sort(key= lambda x : datetime.strptime(x['dtreferencia'], '%d/%m/%Y'), reverse=True)
+        
+        return updated_products

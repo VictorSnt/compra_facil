@@ -271,8 +271,7 @@
                 return response.json();
             })
             .then(responseData => {
-                console.log('Resposta do servidor:', responseData);
-                // Faça algo com a resposta do servidor, se necessário
+                window.location.href = 'http://127.0.0.1:5000/informacoes';
             })
             .catch(error => {
                 console.error('Erro:', error);

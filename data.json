@@ -1,0 +1,562 @@
+[
+    {
+        "iddetalhe": "N5D00000Q5",
+        "cdprincipal": "001995",
+        "dsdetalhe": "ASSENTO SANIT CARAMELO LOFT METASUL",
+        "qtestoque": 6.0,
+        "dtreferencia": "18/04/2024",
+        "sales": 0.0,
+        "shipping_days": 5,
+        "payment": "30/58/86"
+    },
+    {
+        "iddetalhe": "0103FBVC61",
+        "cdprincipal": "012593",
+        "dsdetalhe": "ASSENTO SANIT ALMOF PLUS SLIM BRANCO METASUL",
+        "qtestoque": 7.0,
+        "dtreferencia": "18/04/2024",
+        "sales": 0.0,
+        "shipping_days": 5,
+        "payment": "30/58/86"
+    },
+    {
+        "iddetalhe": "N5D00000PO",
+        "cdprincipal": "000324",
+        "dsdetalhe": "ASSENTO SANIT BRANCO LOFT METASUL",
+        "qtestoque": 9.0,
+        "dtreferencia": "18/04/2024",
+        "sales": 1.0,
+        "shipping_days": 5,
+        "payment": "30/58/86"
+    },
+    {
+        "iddetalhe": "0100RH602A",
+        "cdprincipal": "007722",
+        "dsdetalhe": "ASSENTO SANIT ALMOF CARAMELO ALUM/METAS",
+        "qtestoque": 4.0,
+        "dtreferencia": "18/04/2024",
+        "sales": 0.0,
+        "shipping_days": 5,
+        "payment": "30/58/86"
+    },
+    {
+        "iddetalhe": "0101844P8X",
+        "cdprincipal": "008644",
+        "dsdetalhe": "ASSENTO SANIT ALMOF FIT CINZA CLARO METASUL QUADR",
+        "qtestoque": 3.0,
+        "dtreferencia": "29/02/2024",
+        "sales": 0.0,
+        "shipping_days": 3,
+        "payment": "30/60/90"
+    },
+    {
+        "iddetalhe": "0103DJMH2C",
+        "cdprincipal": "012434",
+        "dsdetalhe": "ASSENTO SANIT ALMOF BRANCO ATLAS CLAS",
+        "qtestoque": 1.0,
+        "dtreferencia": "29/02/2024",
+        "sales": 2.0,
+        "shipping_days": 3,
+        "payment": "30/60/90"
+    },
+    {
+        "iddetalhe": "0102CJSLB5",
+        "cdprincipal": "010534",
+        "dsdetalhe": "ASSENTO SANIT ALMOF FIT BRANCO METASUL QUADR",
+        "qtestoque": 4.0,
+        "dtreferencia": "29/02/2024",
+        "sales": 3.0,
+        "shipping_days": 3,
+        "payment": "30/60/90"
+    },
+    {
+        "iddetalhe": "0103DJMOAC",
+        "cdprincipal": "012435",
+        "dsdetalhe": "ASSENTO SANIT ALMOF CINZA ATLAS CLAS",
+        "qtestoque": 3.0,
+        "dtreferencia": "29/02/2024",
+        "sales": 0.0,
+        "shipping_days": 3,
+        "payment": "30/60/90"
+    },
+    {
+        "iddetalhe": "011LXBZUM8",
+        "cdprincipal": "013812",
+        "dsdetalhe": "ASSENTO SANIT CINZA CLARO LOFT METASUL",
+        "qtestoque": 2.0,
+        "dtreferencia": "29/02/2024",
+        "sales": 2.0,
+        "shipping_days": 3,
+        "payment": "30/60/90"
+    },
+    {
+        "iddetalhe": "011LXBYSNF",
+        "cdprincipal": "013811",
+        "dsdetalhe": "ASSENTO SANIT BEGE LOFT METASUL",
+        "qtestoque": 4.0,
+        "dtreferencia": "29/02/2024",
+        "sales": 0.0,
+        "shipping_days": 3,
+        "payment": "30/60/90"
+    },
+    {
+        "iddetalhe": "011LWWOTC3",
+        "cdprincipal": "013788",
+        "dsdetalhe": "ASSENTO SANIT CARAMELO MAX PLENA 300 TIGRE",
+        "qtestoque": 0.0,
+        "dtreferencia": "23/02/2024",
+        "sales": 5.0,
+        "shipping_days": 3,
+        "payment": "30/60/90"
+    },
+    {
+        "iddetalhe": "011LWWIU57",
+        "cdprincipal": "013786",
+        "dsdetalhe": "ASSENTO SANIT BRANCO MAX PLENA 000 TIGRE",
+        "qtestoque": 0.0,
+        "dtreferencia": "23/02/2024",
+        "sales": 8.0,
+        "shipping_days": 3,
+        "payment": "30/60/90"
+    },
+    {
+        "iddetalhe": "011LWWOJ6U",
+        "cdprincipal": "013787",
+        "dsdetalhe": "ASSENTO SANIT CINZA MAX PLENA 100 TIGRE",
+        "qtestoque": 0.0,
+        "dtreferencia": "23/02/2024",
+        "sales": 6.0,
+        "shipping_days": 3,
+        "payment": "30/60/90"
+    },
+    {
+        "iddetalhe": "N5D00000PR",
+        "cdprincipal": "001854",
+        "dsdetalhe": "ASSENTO SANIT CINZA ESC HERC",
+        "qtestoque": 0.0,
+        "dtreferencia": "05/12/2023",
+        "sales": 2.0,
+        "shipping_days": 7,
+        "payment": "28/56/84/112/140"
+    },
+    {
+        "iddetalhe": "0103BUL27U",
+        "cdprincipal": "012343",
+        "dsdetalhe": "ASSENTO SANIT CINZA CLARO ROMA ALUMASA",
+        "qtestoque": 0.0,
+        "dtreferencia": "28/11/2023",
+        "sales": 2.0,
+        "shipping_days": 4,
+        "payment": "30/45/60"
+    },
+    {
+        "iddetalhe": "011LQX0K81",
+        "cdprincipal": "013624",
+        "dsdetalhe": "ASSENTO SANIT HERC ENVOLVENTE BRANCO",
+        "qtestoque": 0.0,
+        "dtreferencia": "28/11/2023",
+        "sales": 13.0,
+        "shipping_days": 4,
+        "payment": "30/45/60"
+    },
+    {
+        "iddetalhe": "0103BULD11",
+        "cdprincipal": "012344",
+        "dsdetalhe": "ASSENTO SANIT CINZA ESCURO ROMA ALUMASA",
+        "qtestoque": 0.0,
+        "dtreferencia": "28/11/2023",
+        "sales": 4.0,
+        "shipping_days": 4,
+        "payment": "30/45/60"
+    },
+    {
+        "iddetalhe": "0101FW3R0X",
+        "cdprincipal": "008936",
+        "dsdetalhe": "ASSENTO SANIT ALMOF FIT/THE BRANCO HERC QUAD",
+        "qtestoque": 0.0,
+        "dtreferencia": "06/11/2023",
+        "sales": 2.0,
+        "shipping_days": 9,
+        "payment": "28/56/84"
+    },
+    {
+        "iddetalhe": "N5D00000PN",
+        "cdprincipal": "001700",
+        "dsdetalhe": "ASSENTO SANIT BEGE/AREIA  HERC/PLAST",
+        "qtestoque": 1.0,
+        "dtreferencia": "06/11/2023",
+        "sales": 0.0,
+        "shipping_days": 9,
+        "payment": "28/56/84"
+    },
+    {
+        "iddetalhe": "N5D00000PP",
+        "cdprincipal": "001699",
+        "dsdetalhe": "ASSENTO SANIT CARAMELO HERC",
+        "qtestoque": 0.0,
+        "dtreferencia": "06/11/2023",
+        "sales": 1.0,
+        "shipping_days": 9,
+        "payment": "28/56/84"
+    },
+    {
+        "iddetalhe": "0103QP329G",
+        "cdprincipal": "013034",
+        "dsdetalhe": "ASSENTO SANIT HERC ECONOMICO BRANCO",
+        "qtestoque": 0.0,
+        "dtreferencia": "21/10/2023",
+        "sales": 7.0,
+        "shipping_days": 3,
+        "payment": "30/45/60"
+    },
+    {
+        "iddetalhe": "0100YB7UCS",
+        "cdprincipal": "008167",
+        "dsdetalhe": "ASSENTO SANIT ALMOF BRANCO HERC",
+        "qtestoque": 0.0,
+        "dtreferencia": "18/10/2023",
+        "sales": 3.0,
+        "shipping_days": 4,
+        "payment": "30/58/86/114/142"
+    },
+    {
+        "iddetalhe": "0103BIPWQB",
+        "cdprincipal": "012303",
+        "dsdetalhe": "ASSENTO SANIT IDEALE CINZA CL HERC",
+        "qtestoque": 0.0,
+        "dtreferencia": "18/10/2023",
+        "sales": 3.0,
+        "shipping_days": 4,
+        "payment": "30/58/86/114/142"
+    },
+    {
+        "iddetalhe": "0100RHDB07",
+        "cdprincipal": "007731",
+        "dsdetalhe": "ASSENTO SANIT ALMOF PLUS CINZA ESC METASUL",
+        "qtestoque": 0.0,
+        "dtreferencia": "31/07/2023",
+        "sales": 2.0,
+        "shipping_days": 8,
+        "payment": "11/21"
+    },
+    {
+        "iddetalhe": "0103BFZS1P",
+        "cdprincipal": "012293",
+        "dsdetalhe": "ASSENTO SANIT ALMOF PLUS CINZA CLARO METASUL",
+        "qtestoque": 0.0,
+        "dtreferencia": "31/07/2023",
+        "sales": 7.0,
+        "shipping_days": 8,
+        "payment": "11/21"
+    },
+    {
+        "iddetalhe": "0101PRHU15",
+        "cdprincipal": "009641",
+        "dsdetalhe": "ASSENTO SANIT ALMOF BRANCO METASUL",
+        "qtestoque": 0.0,
+        "dtreferencia": "15/07/2023",
+        "sales": 2.0,
+        "shipping_days": 6,
+        "payment": "29/57/85"
+    },
+    {
+        "iddetalhe": "0100Y08O1D",
+        "cdprincipal": "008135",
+        "dsdetalhe": "ASSENTO SANIT PREMIER BRANCO KRONA",
+        "qtestoque": 0.0,
+        "dtreferencia": "04/07/2023",
+        "sales": 6.0,
+        "shipping_days": 18,
+        "payment": "30/40/50/60"
+    },
+    {
+        "iddetalhe": "01038OJIMP",
+        "cdprincipal": "012053",
+        "dsdetalhe": "ASSENTO SANIT BRANCO ROMA ALUMASA",
+        "qtestoque": 0.0,
+        "dtreferencia": "04/07/2023",
+        "sales": 6.0,
+        "shipping_days": 18,
+        "payment": "30/40/50/60"
+    },
+    {
+        "iddetalhe": "0102CJSF22",
+        "cdprincipal": "010533",
+        "dsdetalhe": "ASSENTO SANIT ALMOF FIT PRETO METASUL QUADR",
+        "qtestoque": 1.0,
+        "dtreferencia": "06/05/2023",
+        "sales": 2.0,
+        "shipping_days": 14,
+        "payment": "30/58/86"
+    },
+    {
+        "iddetalhe": "0103QP3MDU",
+        "cdprincipal": "013035",
+        "dsdetalhe": "ASSENTO SANIT HERC ECONOMICO CARAMELO",
+        "qtestoque": 0.0,
+        "dtreferencia": "28/04/2023",
+        "sales": 3.0,
+        "shipping_days": 9,
+        "payment": "30/40/50/60"
+    },
+    {
+        "iddetalhe": "0101I9UM28",
+        "cdprincipal": "009071",
+        "dsdetalhe": "ASSENTO SANIT PREMIER CARAMELO KRONA",
+        "qtestoque": 0.0,
+        "dtreferencia": "22/04/2023",
+        "sales": 1.0,
+        "shipping_days": 5,
+        "payment": "28/56"
+    },
+    {
+        "iddetalhe": "0100Y08R05",
+        "cdprincipal": "008136",
+        "dsdetalhe": "ASSENTO SANIT PREMIER CINZA CLARO KRON",
+        "qtestoque": 0.0,
+        "dtreferencia": "22/04/2023",
+        "sales": 1.0,
+        "shipping_days": 5,
+        "payment": "28/56"
+    },
+    {
+        "iddetalhe": "0103FBU959",
+        "cdprincipal": "012590",
+        "dsdetalhe": "ASSENTO SANIT SOFT BRANCO METASUL",
+        "qtestoque": 0.0,
+        "dtreferencia": "20/01/2023",
+        "sales": 6.0,
+        "shipping_days": 37,
+        "payment": "68/80/111"
+    },
+    {
+        "iddetalhe": "0103OCOI1F",
+        "cdprincipal": "012978",
+        "dsdetalhe": "ASSENTO SANIT RIVIEIRA ALMOF ASTRA TRV/K*BCO-01",
+        "qtestoque": 0.0,
+        "dtreferencia": "26/12/2022",
+        "sales": 2.0,
+        "shipping_days": 14,
+        "payment": "63/77/91/105"
+    },
+    {
+        "iddetalhe": "0103OCNJ8O",
+        "cdprincipal": "012977",
+        "dsdetalhe": "ASSENTO SANIT RIVIEIRA SOPRADO ASTRA TRV/J*BCO-01",
+        "qtestoque": 0.0,
+        "dtreferencia": "26/12/2022",
+        "sales": 3.0,
+        "shipping_days": 14,
+        "payment": "63/77/91/105"
+    },
+    {
+        "iddetalhe": "N5D00006IV",
+        "cdprincipal": "006755",
+        "dsdetalhe": "CONJUNTO FIXA\u00c7AO CAIXA ACOPLADA ASTRA-KPF",
+        "qtestoque": 0.0,
+        "dtreferencia": "26/12/2022",
+        "sales": 3.0,
+        "shipping_days": 14,
+        "payment": "63/77/91/105"
+    },
+    {
+        "iddetalhe": "0103C4R10L",
+        "cdprincipal": "012349",
+        "dsdetalhe": "ASSENTO SANIT ALMOF CINZA CLARO ALUM REF2485",
+        "qtestoque": 0.0,
+        "dtreferencia": "07/11/2022",
+        "sales": 1.0,
+        "shipping_days": 7,
+        "payment": "30/60"
+    },
+    {
+        "iddetalhe": "0103C4QOR9",
+        "cdprincipal": "012348",
+        "dsdetalhe": "ASSENTO SANIT ALMOF BRANCO ALUM REF2482",
+        "qtestoque": 0.0,
+        "dtreferencia": "07/11/2022",
+        "sales": 1.0,
+        "shipping_days": 7,
+        "payment": "30/60"
+    },
+    {
+        "iddetalhe": "0103FBUJ0B",
+        "cdprincipal": "012591",
+        "dsdetalhe": "ASSENTO SANIT SOFT CINZA CLARO METASUL",
+        "qtestoque": 0.0,
+        "dtreferencia": "20/07/2022",
+        "sales": 6.0,
+        "shipping_days": 26,
+        "payment": "42"
+    },
+    {
+        "iddetalhe": "0103FBUO7U",
+        "cdprincipal": "012592",
+        "dsdetalhe": "ASSENTO SANIT SOFT CINZA ESCURO METASUL",
+        "qtestoque": 0.0,
+        "dtreferencia": "20/07/2022",
+        "sales": 6.0,
+        "shipping_days": 26,
+        "payment": "42"
+    },
+    {
+        "iddetalhe": "0103C4REE1",
+        "cdprincipal": "012350",
+        "dsdetalhe": "ASSENTO SANIT ALMOF PRETO ALUM REF2505",
+        "qtestoque": 0.0,
+        "dtreferencia": "27/05/2022",
+        "sales": 2.0,
+        "shipping_days": 4,
+        "payment": "30/60/90"
+    },
+    {
+        "iddetalhe": "0102TFYGOS",
+        "cdprincipal": "011457",
+        "dsdetalhe": "ASSENTO SANIT ALMOF THEMA BRANCO METASUL",
+        "qtestoque": 0.0,
+        "dtreferencia": "09/05/2022",
+        "sales": 7.0,
+        "shipping_days": 10,
+        "payment": "30/60/90"
+    },
+    {
+        "iddetalhe": "0102TFYU6S",
+        "cdprincipal": "011458",
+        "dsdetalhe": "ASSENTO SANIT ALMOF THEMA CINZA CLARO METASUL",
+        "qtestoque": 0.0,
+        "dtreferencia": "09/05/2022",
+        "sales": 4.0,
+        "shipping_days": 10,
+        "payment": "30/60/90"
+    },
+    {
+        "iddetalhe": "N5D00000PQ",
+        "cdprincipal": "001701",
+        "dsdetalhe": "ASSENTO SANIT CINZA HERC/PLAST",
+        "qtestoque": 0.0,
+        "dtreferencia": "18/04/2022",
+        "sales": 1.0,
+        "shipping_days": 3,
+        "payment": "31/60/89/118/147"
+    },
+    {
+        "iddetalhe": "0100FRNI7Y",
+        "cdprincipal": "007276",
+        "dsdetalhe": "ASSENTO SANIT ECO UNIV BRANCO CELIT",
+        "qtestoque": 0.0,
+        "dtreferencia": "25/02/2022",
+        "sales": 6.0,
+        "shipping_days": 7,
+        "payment": "28/42/59"
+    },
+    {
+        "iddetalhe": "0100FROL8I",
+        "cdprincipal": "007277",
+        "dsdetalhe": "ASSENTO SANIT ECO UNIV CINZA CELITE",
+        "qtestoque": 0.0,
+        "dtreferencia": "25/02/2022",
+        "sales": 5.0,
+        "shipping_days": 7,
+        "payment": "28/42/59"
+    },
+    {
+        "iddetalhe": "0100FRP32S",
+        "cdprincipal": "007278",
+        "dsdetalhe": "ASSENTO SANIT ECO UNIV CINZA PRATA CELITE",
+        "qtestoque": 0.0,
+        "dtreferencia": "25/02/2022",
+        "sales": 5.0,
+        "shipping_days": 7,
+        "payment": "28/42/59"
+    },
+    {
+        "iddetalhe": "0100FRP8JM",
+        "cdprincipal": "007279",
+        "dsdetalhe": "ASSENTO SANIT ECO UNIV OCRE CELITE",
+        "qtestoque": 0.0,
+        "dtreferencia": "21/10/2021",
+        "sales": 3.0,
+        "shipping_days": 1,
+        "payment": "28/42/56"
+    },
+    {
+        "iddetalhe": "0100FRRJH5",
+        "cdprincipal": "007281",
+        "dsdetalhe": "ASSENTO SANIT PLUS FIT BRANCO CELITE QUAD",
+        "qtestoque": 1.0,
+        "dtreferencia": "21/10/2021",
+        "sales": 0.0,
+        "shipping_days": 1,
+        "payment": "28/42/56"
+    },
+    {
+        "iddetalhe": "0102TFZ008",
+        "cdprincipal": "011459",
+        "dsdetalhe": "ASSENTO SANIT ALMOF PLUS CINZA ESC METASUL",
+        "qtestoque": 0.0,
+        "dtreferencia": "01/08/2021",
+        "sales": 3.0,
+        "shipping_days": 9,
+        "payment": "30/60/90"
+    },
+    {
+        "iddetalhe": "0102IX7N3E",
+        "cdprincipal": "010914",
+        "dsdetalhe": "ASSENTO SANIT ECO UNIV CINZA CROMO CELIT",
+        "qtestoque": 0.0,
+        "dtreferencia": "03/03/2021",
+        "sales": 6.0,
+        "shipping_days": 1,
+        "payment": "28/42/56"
+    },
+    {
+        "iddetalhe": "0100FRQPHL",
+        "cdprincipal": "007280",
+        "dsdetalhe": "ASSENTO SANIT LIKE BRANCO CELIT QUAD",
+        "qtestoque": 0.0,
+        "dtreferencia": "03/03/2021",
+        "sales": 6.0,
+        "shipping_days": 1,
+        "payment": "28/42/56"
+    },
+    {
+        "iddetalhe": "0100GF4D02",
+        "cdprincipal": "007297",
+        "dsdetalhe": "ASSENTO SANIT ECO UNIV PERGAMON (BRANCO) CELITE",
+        "qtestoque": 0.0,
+        "dtreferencia": "03/03/2021",
+        "sales": 3.0,
+        "shipping_days": 1,
+        "payment": "28/42/56"
+    },
+    {
+        "iddetalhe": "01010Y0E83",
+        "cdprincipal": "008270",
+        "dsdetalhe": "ASSENTO SANIT PREMIER BEGE KRONA",
+        "qtestoque": 13.0,
+        "dtreferencia": "11/02/2021",
+        "sales": 19.0,
+        "shipping_days": 0,
+        "payment": "28/42/56/70/84"
+    },
+    {
+        "iddetalhe": "0102CJRM4L",
+        "cdprincipal": "010532",
+        "dsdetalhe": "ASSENTO SANIT ALMOF BISC CREME METAS",
+        "qtestoque": 0.0,
+        "dtreferencia": "14/11/2020",
+        "sales": 2.0,
+        "shipping_days": 0,
+        "payment": "29/57/85"
+    },
+    {
+        "iddetalhe": "N5D00006GB",
+        "cdprincipal": "006701",
+        "dsdetalhe": "ASSENTO SANIT AGUA MARIN FIT CELIT QUAD",
+        "qtestoque": 0.0,
+        "dtreferencia": "08/03/2019",
+        "sales": 3.0,
+        "shipping_days": 0,
+        "payment": "28/42/56"
+    }
+]

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Informações de Produtos</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    
+    <style>
+        .table-wrapper {
+            overflow-x: auto;
+            max-height: 400px; /* Defina a altura máxima da tabela para ativar a rolagem */
+        }
+
+        .table-wrapper table {
+            width: 100%;
+        }
+
+        .table-wrapper table thead th {
+            position: sticky;
+            top: 0;
+            z-index: 1;
+            background-color: #f8f9fa; /* Cor de fundo do cabeçalho */
+        }
+
+        .table-wrapper table tbody tr:nth-child(even) {
+            background-color: #f8f9fa; /* Cor de fundo para linhas pares */
+        }
+
+        .table-wrapper table tbody tr:hover {
+            background-color: #e9ecef; /* Cor de fundo ao passar o mouse sobre a linha */
+        }
+
+        .table-wrapper table tbody tr td {
+            vertical-align: middle;
+        }
+
+        .badge {
+            padding: 0.5rem 0.75rem;
+            font-size: 0.875rem;
+            font-weight: 700;
+            border-radius: 0.35rem;
+        }
+
+        .badge-success {
+            background-color: #28a745; /* Cor de fundo para sucesso (verde) */
+        }
+
+        .badge-warning {
+            background-color: #ffc107; /* Cor de fundo para aviso (amarelo) */
+        }
+
+        .badge-danger {
+            background-color: #dc3545; /* Cor de fundo para erro (vermelho) */
+        }
+        .table-wrapper table tbody tr.selected {
+            background-color: #76bfff; /* Cor de fundo azul claro */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="my-4">Informações de Produtos</h1>
+        <div class="table-wrapper">
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>Sku</th>
+                        <th>Descrição</th>
+                        <th>Estoque</th>
+                        <th>Data última compra</th>
+                        <th>Vendas</th>
+                        <th>Prazo de entrega</th>
+                        <th>Prazo de pagamento</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for product in products %}
+                    <tr>
+                        <td>{{ product['cdprincipal'] }}</td>
+                        <td>{{ product['dsdetalhe'] }}</td>
+                        <td>{{ product['qtestoque'] }}</td>
+                        <td>{{ product['dtreferencia'] }}</td>
+                        <td>
+                            {% if product['sales'] > 0 %}
+                                <span class="badge badge-success">{{ product['sales'] }}</span>
+                            {% else %}
+                                <span class="badge badge-warning">N/A</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ product['shipping_days'] }}</td>
+                        <td>
+                            {% if product['payment'] %}
+                                <span class="badge badge-danger">{{ product['payment'] }}</span>
+                            {% else %}
+                                <span class="badge badge-warning">N/A</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <button id="sendDataButton" >Criar pedido</button>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+    function toggleSelection(row) {
+        row.classList.toggle('selected');
+    }
+
+    function sendSelectedData() {
+        const rows = document.querySelectorAll('tr.selected');
+        let tableHTML = '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Cotação Construfácil</title><style>body { font-family: Arial, sans-serif; } h1 { text-align: center; margin-bottom: 20px; } table { width: 100%; border-collapse: collapse; } th, td { border: 1px solid #ddd; padding: 8px; text-align: left; } th { background-color: #f2f2f2; } tr:nth-child(even) { background-color: #f2f2f2; }</style></head><body><h1>Cotação Construfácil</h1><table><thead><tr><th>SKU</th><th>Descrição</th><th>Quantidade a Comprar</th></tr></thead><tbody>';
+
+        rows.forEach(row => {
+            const cells = row.querySelectorAll('td');
+            let sku = '';
+            let descricao = '';
+            let quantidadeVendas = 0;
+            let quantidadeEstoque = 0;
+
+            cells.forEach((cell, index) => {
+                switch (index) {
+                    case 0:
+                        sku = cell.innerText;
+                        break;
+                    case 1:
+                        descricao = cell.innerText;
+                        break;
+                    case 4:
+                        quantidadeVendas = parseInt(cell.innerText);
+                        break;
+                    case 2:
+                        quantidadeEstoque = parseInt(cell.innerText);
+                        break;
+                    default:
+                        break;
+                }
+            });
+
+            const quantidadeComprar = Math.max(0, quantidadeVendas - quantidadeEstoque);
+
+            // Adicionar uma linha à tabela com SKU, descrição e quantidade a comprar
+            tableHTML += `<tr><td>${sku}</td><td>${descricao}</td><td>${quantidadeComprar}</td></tr>`;
+        });
+
+        tableHTML += '</tbody></table>';
+
+        // Criar um blob do HTML gerado
+        const blob = new Blob([tableHTML], { type: 'text/html' });
+
+        // Criar um link para download
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'dados_selecionados.html'; // Nome do arquivo de download
+        link.click();
+
+        // Revogar o URL do blob para liberar memória
+        URL.revokeObjectURL(link.href);
+    }
+
+    function handleRowClick(event) {
+        const row = event.target.closest('tr');
+        toggleSelection(row);
+    }  
+
+    document.addEventListener('click', function(event) {
+        if (event.target.closest('tr')) {
+            handleRowClick(event);
+        }
+    });
+
+    document.getElementById('sendDataButton').addEventListener('click', sendSelectedData);
+});
+
+
+    </script>
+</body>
+</html>
