@@ -91,9 +91,10 @@ class DocumentInfoFetcher:
     @staticmethod
     def fetch_document_info(product_id):
         doc_info_query = """
-            SELECT doc.iddocumento, doc.dtreferencia, doc.dtemissao 
-            FROM wshop.documen as doc
+            SELECT doc.iddocumento, doc.dtreferencia, doc.dtemissao, pes.nmpessoa 
+            FROM wshop.documen AS doc
             JOIN wshop.docitem AS docitem ON docitem.iddocumento = doc.iddocumento
+            JOIN wshop.pessoas AS pes ON pes.idpessoa = doc.idpessoa 
             WHERE docitem.iddetalhe = '{}'
             AND doc.tpoperacao = 'C'
             ORDER BY doc.dtreferencia DESC
@@ -136,6 +137,7 @@ class SalesUpdate:
             dtreferencia = doc_info['dtreferencia']
             dtemissao = doc_info['dtemissao']
             document_id = doc_info['iddocumento']
+            nmfornecedor = doc_info['nmpessoa']
             
             shipping_days = (dtreferencia - dtemissao).days
             sales_quant = SalesCalculator.calculate_sales(product_id, dtreferencia)
@@ -146,6 +148,7 @@ class SalesUpdate:
             prod['dtreferencia'] = dtreferencia.strftime('%d/%m/%Y')
             prod['sales'] = sales_quant
             prod['shipping_days'] = shipping_days
+            prod['supplier'] = nmfornecedor
             prod['payment'] = '/'.join(map(str, prazo))
             
             updated_products.append(prod)

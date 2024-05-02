@@ -72,6 +72,7 @@
                         <th>Vendas</th>
                         <th>Prazo de entrega</th>
                         <th>Prazo de pagamento</th>
+                        <th>Fornecedor ultima compra</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -96,6 +97,7 @@
                                 <span class="badge badge-warning">N/A</span>
                             {% endif %}
                         </td>
+                        <td>{{ product['supplier'] }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
