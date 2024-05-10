@@ -260,7 +260,7 @@
             var jsonData = JSON.stringify(data);
 
             // Construir a URL com os dados JSON como parte do corpo da solicitação GET
-            var url = 'http://127.0.0.1:5000/lista_compras?data=' + encodeURIComponent(jsonData);
+            var url = 'http://192.168.0.28:5000/lista_compras?data=' + encodeURIComponent(jsonData);
 
             // Enviar solicitação GET
             fetch(url)
@@ -271,7 +271,7 @@
                 return response.json();
             })
             .then(responseData => {
-                window.location.href = 'http://127.0.0.1:5000/informacoes';
+                window.location.href = 'http://192.168.0.28:5000/informacoes';
             })
             .catch(error => {
                 console.error('Erro:', error);

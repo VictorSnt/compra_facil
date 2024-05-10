@@ -35,4 +35,4 @@ def reder_list():
         result = json.load(file)
     return render_template('prod_list.html', products=result)
 
-app.run('127.0.0.1', 5000, True)
+app.run('0.0.0.0', 5000, True)
