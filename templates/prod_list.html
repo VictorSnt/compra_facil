@@ -210,63 +210,78 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-    function toggleSelection(row) {
-        row.classList.toggle('selected');
-    }
+        function toggleSelection(row) {
+            row.classList.toggle('selected');
+        }
 
-    function sendSelectedData() {
-        const rows = document.querySelectorAll('tr.selected');
-        const data = []        
-        rows.forEach(row => {
-            const cells = row.querySelectorAll('td');
-            let sku = '';
-            let descricao = '';
-            let quantidadeVendas = 0;
-            let quantidadeEstoque = 0;
+        function sendSelectedData() {
+            const rows = document.querySelectorAll('tr.selected');
+            const data = []        
+            rows.forEach(row => {
+                const cells = row.querySelectorAll('td');
+                let sku = '';
+                let descricao = '';
+                let quantidadeVendas = 0;
+                let quantidadeEstoque = 0;
 
-            cells.forEach((cell, index) => {
-                switch (index) {
-                    case 0:
-                        sku = cell.innerText;
-                        break;
-                    case 1:
-                        descricao = cell.innerText;
-                        break;
-                    case 4:
-                        quantidadeVendas = parseInt(cell.innerText);
-                        break;
-                    case 2:
-                        quantidadeEstoque = parseInt(cell.innerText);
-                        break;
-                    default:
-                        break;
-                }
+                cells.forEach((cell, index) => {
+                    switch (index) {
+                        case 0:
+                            sku = cell.innerText;
+                            break;
+                        case 1:
+                            descricao = cell.innerText;
+                            break;
+                        case 4:
+                            quantidadeVendas = parseInt(cell.innerText);
+                            break;
+                        case 2:
+                            quantidadeEstoque = parseInt(cell.innerText);
+                            break;
+                        default:
+                            break;
+                    }
+                });
+
+                const quantidadeComprar = Math.max(0, quantidadeVendas - quantidadeEstoque);
+                product = {'codigo': sku, 'descricao': descricao, 'compra': quantidadeComprar}
+                data.push(product)
             });
+            var jsonData = JSON.stringify(data);
+            var url = 'http://192.168.0.28:5000/create_spreadsheet?data=' + encodeURIComponent(jsonData);
+            fetch(url)
+                .then(response => {
+                    if (response.ok) {
+                        const link = document.createElement('a');
+                        var donwloadUrl = 'http://192.168.0.28:5000/donwload_spreadsheet'
+                        link.href = donwloadUrl;
+                        link.setAttribute('download', 'cotacao.xlsx');
+                        document.body.appendChild(link);
+                        link.click();
+                        link.parentNode.removeChild(link);
+                    }else{
+                        throw new Error('Erro ao criar a planilha');
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro:', error);
+                    window.alert('Erro ao criar a planilha');
+                });
+            }
 
-            const quantidadeComprar = Math.max(0, quantidadeVendas - quantidadeEstoque);
-            product = {'codigo': sku, 'descricao': descricao, 'compra': quantidadeComprar}
-            data.push(product)
+        function handleRowClick(event) {
+            const row = event.target.closest('tr');
+            toggleSelection(row);
+        }  
+
+        document.addEventListener('click', function(event) {
+            if (event.target.closest('tr')) {
+                handleRowClick(event);
+            }
         });
 
-        console.log(data)
-        window.alert("Done")
-    }
-
-    function handleRowClick(event) {
-        const row = event.target.closest('tr');
-        toggleSelection(row);
-    }  
-
-    document.addEventListener('click', function(event) {
-        if (event.target.closest('tr')) {
-            handleRowClick(event);
-        }
-    });
-
-    document.getElementById('sendDataButton').addEventListener('click', sendSelectedData);
-});
-
-
+        document.getElementById('sendDataButton').addEventListener('click', sendSelectedData);
+        });
     </script>
 </body>
 </html>

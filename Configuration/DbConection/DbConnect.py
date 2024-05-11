@@ -24,13 +24,13 @@ class DbConnection:
             self.error = f"Falha na conexão: {e}"
             raise psycopg2.Error
 
-    def execute_query(self, query) -> list:
+    def execute_query(self, query, args=None) -> list:
         if not self.conn:
             self.error = "Você não está conectado a nenhum banco de dados."
             return []
         try:
             with self.conn.cursor() as cursor:
-                cursor.execute(query)
+                cursor.execute(query, args)
                 return self._fetch_results(cursor)
         except psycopg2.Error as e:
             self.error = f"Falha na execução da consulta: {e}"

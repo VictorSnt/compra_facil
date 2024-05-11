@@ -6,10 +6,10 @@ from auth.database import database_auth
 
 class DatabaseHandler:
     @staticmethod
-    def execute_query(query):
+    def execute_query(query, args=None):
         with database_auth() as connection:
             connection.connect()
-            response = connection.execute_query(query)
+            response = connection.execute_query(query, args)
             connection.close_connection()
         return response
 
@@ -72,16 +72,35 @@ class ProductFilter:
 class StockUpdater:
     @staticmethod
     def join_products_stock(products: List[dict]) -> List[dict]:
+        if not products:
+            return []
+
+        # Coleta todos os ids de detalhes dos produtos
+        product_ids = [product['iddetalhe'] for product in products]
+
+        # Consulta SQL para obter o estoque mais recente de cada detalhe
+        stock_query = """
+        SELECT e.iddetalhe, e.qtestoque
+        FROM wshop.estoque e
+        INNER JOIN (
+            SELECT iddetalhe, MAX(dtreferencia) AS max_dtreferencia
+            FROM wshop.estoque
+            GROUP BY iddetalhe
+        ) AS latest_stock ON e.iddetalhe = latest_stock.iddetalhe AND e.dtreferencia = latest_stock.max_dtreferencia
+        WHERE e.iddetalhe IN ({})
+        """.format(','.join(['%s'] * len(product_ids)))
+
+        # Executa a consulta com todos os ids de detalhes dos produtos
+        stock_response = DatabaseHandler.execute_query(stock_query, tuple(product_ids))
+
+        # Mapeia as respostas de estoque para um dicionário com os ids de detalhe como chave
+        stock_map = {stock['iddetalhe']: stock['qtestoque'] for stock in stock_response}
+
+        # Atualiza os produtos com as informações de estoque correspondentes
         updated_products = []
-        stock_query = "SELECT qtestoque FROM wshop.estoque WHERE iddetalhe = '{}' ORDER BY dtreferencia DESC LIMIT 1"
-
-       
         for product in products:
-            product_id = product['iddetalhe']
-            stock_response = DatabaseHandler.execute_query(stock_query.format(product_id))
-
-            if stock_response:
-                stock_quantity = stock_response[0]['qtestoque']
+            stock_quantity = stock_map.get(product['iddetalhe'])
+            if stock_quantity is not None:
                 product['qtestoque'] = stock_quantity
                 updated_products.append(product)
 
@@ -89,20 +108,38 @@ class StockUpdater:
 
 class DocumentInfoFetcher:
     @staticmethod
-    def fetch_document_info(product_id):
+    def fetch_document_info(product_ids: List[str]) -> dict:
+        
+        if not product_ids:
+            return {}
+        
         doc_info_query = """
-            SELECT doc.iddocumento, doc.dtreferencia, doc.dtemissao, pes.nmpessoa 
+            SELECT doc.iddocumento, doc.dtreferencia, doc.dtemissao, pes.nmpessoa, docitem.iddetalhe
             FROM wshop.documen AS doc
             JOIN wshop.docitem AS docitem ON docitem.iddocumento = doc.iddocumento
             JOIN wshop.pessoas AS pes ON pes.idpessoa = doc.idpessoa 
-            WHERE docitem.iddetalhe = '{}'
+            WHERE docitem.iddetalhe IN ({})
             AND doc.tpoperacao = 'C'
-            ORDER BY doc.dtreferencia DESC
-            LIMIT 1;
+            AND (docitem.iddetalhe, doc.dtreferencia) IN (
+                SELECT iddetalhe, dtreferencia
+                FROM (
+                    SELECT di.iddetalhe, di.dtreferencia, 
+                        ROW_NUMBER() OVER (PARTITION BY di.iddetalhe ORDER BY di.dtreferencia DESC) AS rn
+                    FROM wshop.documen AS d
+                    JOIN wshop.docitem AS di ON d.iddocumento = di.iddocumento
+                    WHERE di.iddetalhe IN ({})
+                    AND d.tpoperacao = 'C'
+                ) AS ranked
+                WHERE rn = 1
+            )
+            ORDER BY doc.dtreferencia DESC;
         """
-        doc_info_result = DatabaseHandler.execute_query(doc_info_query.format(product_id))
-        return doc_info_result[0] if doc_info_result else None
-
+        formated_ids = ','.join(['%s'] * len(product_ids))
+        doc_info_query = doc_info_query.format(formated_ids, formated_ids)
+        doc_info_results = DatabaseHandler.execute_query(doc_info_query, tuple(product_ids + product_ids))
+        doc_info_map = {doc_info['iddetalhe']: doc_info for doc_info in doc_info_results}
+        return doc_info_map
+    
 class SalesCalculator:
     @staticmethod
     def calculate_sales(product_id, dtreferencia):
@@ -127,10 +164,15 @@ class PaymentFluxFetcher:
 class SalesUpdate:
     @staticmethod
     def join_product_sales(products: List[dict]) -> List[dict]:
+        if not products:
+            return []
+
+        product_ids = [prod['iddetalhe'] for prod in products]
+        doc_info_map = DocumentInfoFetcher.fetch_document_info(product_ids)
         updated_products = []
         for prod in products:
             product_id = prod['iddetalhe']
-            doc_info = DocumentInfoFetcher.fetch_document_info(product_id)
+            doc_info = doc_info_map.get(product_id)
             if not doc_info:
                 continue
             
@@ -153,6 +195,6 @@ class SalesUpdate:
             
             updated_products.append(prod)
         
-        updated_products.sort(key= lambda x : datetime.strptime(x['dtreferencia'], '%d/%m/%Y'), reverse=True)
+        updated_products.sort(key=lambda x: datetime.strptime(x['dtreferencia'], '%d/%m/%Y'), reverse=True)
         
         return updated_products
