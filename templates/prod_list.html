@@ -248,12 +248,12 @@
                 data.push(product)
             });
             var jsonData = JSON.stringify(data);
-            var url = 'http://192.168.0.28:5000/create_spreadsheet?data=' + encodeURIComponent(jsonData);
+            var url = 'http://10.1.10.50:5000/create_spreadsheet?data=' + encodeURIComponent(jsonData);
             fetch(url)
                 .then(response => {
                     if (response.ok) {
                         const link = document.createElement('a');
-                        var donwloadUrl = 'http://192.168.0.28:5000/donwload_spreadsheet'
+                        var donwloadUrl = 'http://10.1.10.50:5000/donwload_spreadsheet'
                         link.href = donwloadUrl;
                         link.setAttribute('download', 'cotacao.xlsx');
                         document.body.appendChild(link);
