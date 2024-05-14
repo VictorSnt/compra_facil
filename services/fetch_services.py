@@ -120,7 +120,7 @@ class DocumentInfoFetcher:
             FROM wshop.documen AS doc
             JOIN wshop.docitem AS docitem ON docitem.iddocumento = doc.iddocumento
             JOIN wshop.pessoas AS pes ON pes.idpessoa = doc.idpessoa 
-            WHERE docitem.iddetalhe IN ({})
+            WHERE (docitem.iddetalhe IN ({}))
             AND doc.tpoperacao = 'C'
             AND (docitem.iddetalhe, doc.dtreferencia) IN (
                 SELECT iddetalhe, dtreferencia
@@ -201,6 +201,10 @@ class SalesUpdate:
 
         product_ids = [prod['iddetalhe'] for prod in products]
         doc_info_map = DocumentInfoFetcher.fetch_document_info(product_ids)
+        products = [
+            prod for prod in products if prod['iddetalhe'] in 
+            {info['iddetalhe'] for info in doc_info_map.values()}
+        ]
         print(datetime.now())
         document_ids = [doc['iddocumento'] for doc in doc_info_map.values()]
         payment_fluxes = PaymentFluxFetcher.fetch_payment_flux(document_ids)
@@ -228,7 +232,10 @@ class SalesUpdate:
                 prod['dura_mes'] = (prod['qtestoque'] > ((sales_quant / sales_days) * 30))
 
             shipping_days = (dtreferencia - dtemissao).days
-            prazo = [(payment['dtvencimento'] - payment['dtemissao']).days for payment in payment_flux] 
+            if payment_flux:
+                prazo = [(payment['dtvencimento'] - payment['dtemissao']).days for payment in payment_flux]
+            else:
+                prazo = 'N/A'
             prod['dtreferencia'] = dtreferencia.strftime('%d/%m/%Y')
             prod['sales'] = sales_quant
             prod['shipping_days'] = shipping_days
