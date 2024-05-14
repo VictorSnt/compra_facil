@@ -1,8 +1,10 @@
 from datetime import datetime
-import json
-import re
+from math import floor
 from typing import List
 from auth.database import database_auth
+import json
+import re
+
 
 class DatabaseHandler:
     @staticmethod
@@ -180,21 +182,27 @@ class SalesUpdate:
             dtemissao = doc_info['dtemissao']
             document_id = doc_info['iddocumento']
             nmfornecedor = doc_info['nmpessoa']
-            
+            prod['dura_mes'] = True
             shipping_days = (dtreferencia - dtemissao).days
-            sales_quant = SalesCalculator.calculate_sales(product_id, dtreferencia)
+            sales_quant = SalesCalculator.calculate_sales(product_id, dtreferencia) or 0
             payment_flux = PaymentFluxFetcher.fetch_payment_flux(document_id)
             
             prazo = [(payment['dtvencimento'] - payment['dtemissao']).days for payment in payment_flux]
             
+            sales_days = (datetime.now() - dtreferencia).days
+            if sales_quant:
+                prod['dura_mes'] = (prod['qtestoque'] > ((sales_quant / sales_days) * 30))
+
             prod['dtreferencia'] = dtreferencia.strftime('%d/%m/%Y')
             prod['sales'] = sales_quant
             prod['shipping_days'] = shipping_days
             prod['supplier'] = nmfornecedor
             prod['payment'] = '/'.join(map(str, prazo))
-            
+            prod['sugestion'] = (sales_quant / sales_days * 15) if not prod['dura_mes'] else 0
+            if prod['sugestion'] > 0 and prod['sugestion'] < 3:
+                prod['sugestion'] = 3
             updated_products.append(prod)
-        
+            prod['sugestion'] = floor(prod['sugestion'])
         updated_products.sort(key=lambda x: datetime.strptime(x['dtreferencia'], '%d/%m/%Y'), reverse=True)
-        
+        updated_products.sort(key=lambda x: x['supplier'])
         return updated_products

@@ -167,9 +167,11 @@
             <table class="table table-striped table-hover">
                 <thead>
                     <tr>
+                        <th>Estoque minimo</th>
                         <th>Sku</th>
                         <th>Descrição</th>
                         <th>Estoque</th>
+                        <th>Sugestão de compra</th>
                         <th>Data última compra</th>
                         <th>Vendas</th>
                         <th>Prazo de entrega</th>
@@ -180,9 +182,15 @@
                 <tbody>
                     {% for product in products %}
                     <tr>
+                        {% if not product['dura_mes'] %}
+                        <td>X</td>
+                        {% else %}
+                        <td>V</td>
+                        {% endif %}
                         <td>{{ product['cdprincipal'] }}</td>
                         <td>{{ product['dsdetalhe'] }}</td>
                         <td>{{ product['qtestoque'] }}</td>
+                        <td>{{ product['sugestion'] }}</td>
                         <td>{{ product['dtreferencia'] }}</td>
                         <td>
                             {% if product['sales'] > 0 %}
@@ -226,24 +234,20 @@
 
                 cells.forEach((cell, index) => {
                     switch (index) {
-                        case 0:
+                        case 1:
                             sku = cell.innerText;
                             break;
-                        case 1:
+                        case 2:
                             descricao = cell.innerText;
                             break;
                         case 4:
-                            quantidadeVendas = parseInt(cell.innerText);
-                            break;
-                        case 2:
-                            quantidadeEstoque = parseInt(cell.innerText);
+                            quantidadeComprar = parseInt(cell.innerText);
                             break;
                         default:
                             break;
                     }
                 });
 
-                const quantidadeComprar = Math.max(0, quantidadeVendas - quantidadeEstoque);
                 product = {'codigo': sku, 'descricao': descricao, 'compra': quantidadeComprar}
                 data.push(product)
             });
