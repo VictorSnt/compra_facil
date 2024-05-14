@@ -1,0 +1,90 @@
+[
+    {
+        "iddetalhe": "011LWGIE2M",
+        "cdprincipal": "013775",
+        "dsdetalhe": "ARCO SERRA MINI JAPONES",
+        "qtestoque": 5.0,
+        "dtreferencia": "15/02/2024",
+        "sales": 1.0,
+        "shipping_days": 5,
+        "supplier": "NOVA CASA DIST MAT CONST S/A MG FL 12",
+        "payment": "32/60/88"
+    },
+    {
+        "iddetalhe": "N5D0000394",
+        "cdprincipal": "003492",
+        "dsdetalhe": "ARCO SERRA CB VERMELHO STARRETT",
+        "qtestoque": 3.0,
+        "dtreferencia": "05/12/2023",
+        "sales": 0,
+        "shipping_days": 7,
+        "supplier": "NOVA CASA DIST MAT CONST S/A MG FL 12",
+        "payment": "28/56/84/112/140"
+    },
+    {
+        "iddetalhe": "0101KB5E3I",
+        "cdprincipal": "009196",
+        "dsdetalhe": "ARCO SERRA 12 TRAM REF 43301/012",
+        "qtestoque": 1.0,
+        "dtreferencia": "28/11/2023",
+        "sales": 2.0,
+        "shipping_days": 4,
+        "supplier": "V.S. DISTRIBUIDORA LTDA",
+        "payment": "30/45/60"
+    },
+    {
+        "iddetalhe": "0103Z1EN83",
+        "cdprincipal": "013351",
+        "dsdetalhe": "ARCO SERRA IRWIN 12",
+        "qtestoque": 5.0,
+        "dtreferencia": "27/06/2023",
+        "sales": 0,
+        "shipping_days": 27,
+        "supplier": "BLACK E DECKER DO BRASIL LTDA",
+        "payment": "28/42/56/70/84"
+    },
+    {
+        "iddetalhe": "N5D000058Q",
+        "cdprincipal": "005783",
+        "dsdetalhe": "ARCO SERRA IRWIN 10",
+        "qtestoque": 5.0,
+        "dtreferencia": "27/06/2023",
+        "sales": 0,
+        "shipping_days": 27,
+        "supplier": "BLACK E DECKER DO BRASIL LTDA",
+        "payment": "28/42/56/70/84"
+    },
+    {
+        "iddetalhe": "0100EH621D",
+        "cdprincipal": "007225",
+        "dsdetalhe": "ARCO SERRA 12 REGULAVEL  MAX-18850",
+        "qtestoque": 1.0,
+        "dtreferencia": "31/01/2023",
+        "sales": 1.0,
+        "shipping_days": 4,
+        "supplier": "V.S. DISTRIBUIDORA LTDA",
+        "payment": "30/45/60"
+    },
+    {
+        "iddetalhe": "0103FCNF94",
+        "cdprincipal": "012601",
+        "dsdetalhe": "ARCO SERRA 12 CB AM METASUL",
+        "qtestoque": 3.0,
+        "dtreferencia": "20/07/2022",
+        "sales": 9.0,
+        "shipping_days": 26,
+        "supplier": "IBMF - Industria de Materiais p/ Construcao Ltda.",
+        "payment": "42"
+    },
+    {
+        "iddetalhe": "N5D00005EZ",
+        "cdprincipal": "005914",
+        "dsdetalhe": "ARCO SERRA FIXO 12 MAX/THOMP",
+        "qtestoque": 5.0,
+        "dtreferencia": "11/01/2022",
+        "sales": 15.0,
+        "shipping_days": 3,
+        "supplier": "NOVA CASA DIST MAT CONST S/A MG FL 12",
+        "payment": "29/43/57/71/85"
+    }
+]

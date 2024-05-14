@@ -144,24 +144,54 @@ class DocumentInfoFetcher:
     
 class SalesCalculator:
     @staticmethod
-    def calculate_sales(product_id, dtreferencia):
+    def calculate_sales(product_ids, dtreferencias):
         sales_query = """
-            SELECT COALESCE(SUM(qtvenda), 0) as total FROM wshop.estoque
-            WHERE iddetalhe = '{}'
-            AND dtreferencia BETWEEN '{}' AND CURRENT_DATE
+            SELECT 
+                iddetalhe,
+                qtvenda,
+                dtreferencia
+            FROM 
+                wshop.estoque
+            WHERE 
+                iddetalhe IN ({})
+            ORDER BY 
+                iddetalhe, dtreferencia ASC;
         """
-        sales_result = DatabaseHandler.execute_query(sales_query.format(product_id, dtreferencia))
-        return sales_result[0]['total'] if sales_result else 0
+        formated_ids = ','.join(['%s'] * len(product_ids))
+        sales_result = DatabaseHandler.execute_query(sales_query.format(formated_ids), product_ids)
+        filtered_sales = {}
+        for sale in sales_result:
+            if not sale['iddetalhe'] in filtered_sales:
+                filtered_sales[sale['iddetalhe']] = []
+            if not sale['dtreferencia'] in filtered_sales[sale['iddetalhe']]:
+                filtered_sales[sale['iddetalhe']].append(
+                    {'dtreferencia': sale['dtreferencia'], 'qtvenda': sale['qtvenda']}
+                )
+        calc_sales = {}
+        for iddetalhe, sales_info in filtered_sales.items():
+            dtref = dtreferencias.get(iddetalhe)
+            if not dtref:
+                continue
+            period_sales =  [sale for sale in sales_info if sale['dtreferencia'] >= dtreferencias.get(iddetalhe)]
+            only_sales = [period['qtvenda'] for period in period_sales if period['qtvenda']]
+            calc_sales[iddetalhe] = sum(only_sales)
+        return calc_sales
 
 class PaymentFluxFetcher:
     @staticmethod
-    def fetch_payment_flux(document_id):
+    def fetch_payment_flux(document_ids):
         payment_flux_query = """
-            SELECT dtemissao, dtvencimento FROM wshop.fluxo
-            WHERE iddocumento = '{}'
+            SELECT dtemissao, dtvencimento, iddocumento FROM wshop.fluxo
+            WHERE iddocumento IN ({})
         """
-        payment_flux_result = DatabaseHandler.execute_query(payment_flux_query.format(document_id))
-        return payment_flux_result
+        formated_ids = ','.join(['%s'] * len(document_ids))
+        payment_flux_result = DatabaseHandler.execute_query(payment_flux_query.format(formated_ids), document_ids)
+        formated_flux = {}
+        for flux in payment_flux_result:
+            if not flux['iddocumento'] in formated_flux:
+                formated_flux[flux['iddocumento']] = []
+            formated_flux[flux['iddocumento']].append(flux)
+        return formated_flux
 
 class SalesUpdate:
     @staticmethod
@@ -171,28 +201,34 @@ class SalesUpdate:
 
         product_ids = [prod['iddetalhe'] for prod in products]
         doc_info_map = DocumentInfoFetcher.fetch_document_info(product_ids)
+        print(datetime.now())
+        document_ids = [doc['iddocumento'] for doc in doc_info_map.values()]
+        payment_fluxes = PaymentFluxFetcher.fetch_payment_flux(document_ids)
+        print(datetime.now())
+        dtreferencias = {doc['iddetalhe']: doc['dtreferencia'] for doc in doc_info_map.values()}
+        sales_quants = SalesCalculator.calculate_sales(product_ids, dtreferencias)
+        print(datetime.now())
         updated_products = []
+        
         for prod in products:
             product_id = prod['iddetalhe']
             doc_info = doc_info_map.get(product_id)
+            document_id = doc_info['iddocumento']
+            payment_flux = payment_fluxes.get(document_id)
+            sales_quant = sales_quants.get(product_id)
             if not doc_info:
                 continue
-            
-            dtreferencia = doc_info['dtreferencia']
+            dtreferencia: datetime = doc_info['dtreferencia']
             dtemissao = doc_info['dtemissao']
             document_id = doc_info['iddocumento']
             nmfornecedor = doc_info['nmpessoa']
             prod['dura_mes'] = True
-            shipping_days = (dtreferencia - dtemissao).days
-            sales_quant = SalesCalculator.calculate_sales(product_id, dtreferencia) or 0
-            payment_flux = PaymentFluxFetcher.fetch_payment_flux(document_id)
-            
-            prazo = [(payment['dtvencimento'] - payment['dtemissao']).days for payment in payment_flux]
-            
             sales_days = (datetime.now() - dtreferencia).days
             if sales_quant:
                 prod['dura_mes'] = (prod['qtestoque'] > ((sales_quant / sales_days) * 30))
 
+            shipping_days = (dtreferencia - dtemissao).days
+            prazo = [(payment['dtvencimento'] - payment['dtemissao']).days for payment in payment_flux] 
             prod['dtreferencia'] = dtreferencia.strftime('%d/%m/%Y')
             prod['sales'] = sales_quant
             prod['shipping_days'] = shipping_days
@@ -206,3 +242,4 @@ class SalesUpdate:
         updated_products.sort(key=lambda x: datetime.strptime(x['dtreferencia'], '%d/%m/%Y'), reverse=True)
         updated_products.sort(key=lambda x: x['supplier'])
         return updated_products
+
