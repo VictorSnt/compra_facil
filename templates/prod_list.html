@@ -173,10 +173,10 @@
                         <th>Estoque</th>
                         <th>Sugestão de compra</th>
                         <th>Data última compra</th>
+                        <th>Data última venda</th>
                         <th>Vendas</th>
-                        <th>Prazo de entrega</th>
-                        <th>Prazo de pagamento</th>
-                        <th>Fornecedor ultima compra</th>
+                        <th>Estoque maximo</th>
+                        <th>Estoque minimo</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -192,6 +192,7 @@
                         <td>{{ product['qtestoque'] }}</td>
                         <td>{{ product['sugestion'] }}</td>
                         <td>{{ product['dtreferencia'] }}</td>
+                        <td>{{ product['last_sale'] }}</td>
                         <td>
                             {% if product['sales'] > 0 %}
                                 <span class="badge badge-success">{{ product['sales'] }}</span>
@@ -199,15 +200,14 @@
                                 <span class="badge badge-warning">N/A</span>
                             {% endif %}
                         </td>
-                        <td>{{ product['shipping_days'] }}</td>
+                        <td>{{ product['stock_max'] }}</td>
                         <td>
-                            {% if product['payment'] %}
-                                <span class="badge badge-danger">{{ product['payment'] }}</span>
+                            {% if product['stock_min'] %}
+                                <span class="badge badge-danger">{{ product['stock_min'] }}</span>
                             {% else %}
                                 <span class="badge badge-warning">N/A</span>
                             {% endif %}
                         </td>
-                        <td>{{ product['supplier'] }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>

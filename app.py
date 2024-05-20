@@ -27,18 +27,18 @@ def index_page():
 
 @app.route("/lista_compras")
 def list_compras():
-    print(datetime.datetime.now())
+
     
     data = request.args.get('data', False)
     if data:
         parsed_data = json.loads(data)
-        print(datetime.datetime.now())
+    
         filtered_products = ProductFilter.filter_products(parsed_data)
-        print(datetime.datetime.now())
+    
         updated_products = StockUpdater.join_products_stock(filtered_products)
-        print(datetime.datetime.now())
+    
         result = SalesUpdate.join_product_sales(updated_products)
-        print(datetime.datetime.now())
+    
         with open(report_path, 'w+') as file:
             json.dump(result, file, indent=4)
         return jsonify({'ok': True}), 200

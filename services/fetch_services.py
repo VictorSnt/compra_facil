@@ -1,34 +1,13 @@
+from auth.database import DatabaseHandler
 from datetime import datetime
+from typing import List, Dict
 from math import floor
-from typing import List
-from auth.database import database_auth
 import json
 import re
 
 
-class DatabaseHandler:
-    @staticmethod
-    def execute_query(query, args=None):
-        with database_auth() as connection:
-            connection.connect()
-            response = connection.execute_query(query, args)
-            connection.close_connection()
-        return response
-
-class ProductFetcher:
-    @staticmethod
-    def fetch_all_prod_family():
-        return DatabaseHandler.execute_query("SELECT idfamilia, dsfamilia FROM wshop.familia")
-
-    @staticmethod
-    def fetch_all_prod_groups():
-        return DatabaseHandler.execute_query("SELECT idgrupo, nmgrupo FROM wshop.grupo")
-
-    @staticmethod
-    def fetch_all_prods():
-        return DatabaseHandler.execute_query("SELECT iddetalhe, dsdetalhe FROM wshop.detalhe WHERE stdetalheativo = true")
-
 class DataParser:
+
     @staticmethod
     def parse_selected_items(selected_items):
         parsed_items = []
@@ -45,6 +24,22 @@ class DataParser:
                 parsed_items.append(parsed_item)
         return parsed_items
 
+class ProductFetcher:
+    @staticmethod
+    def fetch_all_prod_family():
+        query = "SELECT idfamilia, dsfamilia FROM wshop.familia"
+        return DatabaseHandler().execute_query(query)
+
+    @staticmethod
+    def fetch_all_prod_groups():
+        query = "SELECT idgrupo, nmgrupo FROM wshop.grupo"
+        return DatabaseHandler().execute_query(query)
+
+    @staticmethod
+    def fetch_all_prods():
+        query = "SELECT iddetalhe, dsdetalhe FROM wshop.detalhe WHERE stdetalheativo = true"
+        return DatabaseHandler().execute_query(query)
+    
 class ProductQueryBuilder:
     @staticmethod
     def build_products_query(groups, families):
@@ -69,7 +64,7 @@ class ProductFilter:
         families = DataParser.parse_selected_items(data['selectedFamilies'])
         
         query = ProductQueryBuilder.build_products_query(groups, families)
-        return DatabaseHandler.execute_query(query)
+        return DatabaseHandler().execute_query(query)
 
 class StockUpdater:
     @staticmethod
@@ -77,10 +72,7 @@ class StockUpdater:
         if not products:
             return []
 
-        # Coleta todos os ids de detalhes dos produtos
         product_ids = [product['iddetalhe'] for product in products]
-
-        # Consulta SQL para obter o estoque mais recente de cada detalhe
         stock_query = """
         SELECT e.iddetalhe, e.qtestoque
         FROM wshop.estoque e
@@ -92,13 +84,8 @@ class StockUpdater:
         WHERE e.iddetalhe IN ({})
         """.format(','.join(['%s'] * len(product_ids)))
 
-        # Executa a consulta com todos os ids de detalhes dos produtos
-        stock_response = DatabaseHandler.execute_query(stock_query, tuple(product_ids))
-
-        # Mapeia as respostas de estoque para um dicionário com os ids de detalhe como chave
+        stock_response = DatabaseHandler().execute_query(stock_query, tuple(product_ids))
         stock_map = {stock['iddetalhe']: stock['qtestoque'] for stock in stock_response}
-
-        # Atualiza os produtos com as informações de estoque correspondentes
         updated_products = []
         for product in products:
             stock_quantity = stock_map.get(product['iddetalhe'])
@@ -108,7 +95,25 @@ class StockUpdater:
 
         return updated_products
 
-class DocumentInfoFetcher:
+class OrderInfoBuilder:
+
+    @staticmethod
+    def fetch_order_info(product_ids: List[str]) -> dict:
+        
+        if not product_ids:
+            return {}
+
+        order_info_query = """
+            SELECT pitem.iddetalhe, pitem.qtpedida FROM wshop.pedidos AS ped
+            JOIN wshop.peditem AS pitem ON ped.idpedido = pitem.idpedido
+            WHERE ped.cdstatus = 'Aberto' AND pitem.iddetalhe IN ({})
+        """.format(','.join(['%s'] * len(product_ids)))
+        orders_response = DatabaseHandler().execute_query(order_info_query, tuple(product_ids))
+        mapped_orders = {order['iddetalhe']: order['qtpedida'] for order in orders_response}
+        return mapped_orders
+
+class DocumentInfoBuilder:
+    
     @staticmethod
     def fetch_document_info(product_ids: List[str]) -> dict:
         
@@ -138,7 +143,7 @@ class DocumentInfoFetcher:
         """
         formated_ids = ','.join(['%s'] * len(product_ids))
         doc_info_query = doc_info_query.format(formated_ids, formated_ids)
-        doc_info_results = DatabaseHandler.execute_query(doc_info_query, tuple(product_ids + product_ids))
+        doc_info_results = DatabaseHandler().execute_query(doc_info_query, tuple(product_ids + product_ids))
         doc_info_map = {doc_info['iddetalhe']: doc_info for doc_info in doc_info_results}
         return doc_info_map
     
@@ -158,7 +163,7 @@ class SalesCalculator:
                 iddetalhe, dtreferencia ASC;
         """
         formated_ids = ','.join(['%s'] * len(product_ids))
-        sales_result = DatabaseHandler.execute_query(sales_query.format(formated_ids), product_ids)
+        sales_result = DatabaseHandler().execute_query(sales_query.format(formated_ids), product_ids)
         filtered_sales = {}
         for sale in sales_result:
             if not sale['iddetalhe'] in filtered_sales:
@@ -172,9 +177,14 @@ class SalesCalculator:
             dtref = dtreferencias.get(iddetalhe)
             if not dtref:
                 continue
+            this_prod_sales = [sale['qtvenda'] for sale in sales_info if sale['qtvenda']]
+            this_prod_sales_date = [sale['dtreferencia'] for sale in sales_info if sale['qtvenda']]
+            all_sales_date = sorted(this_prod_sales_date, reverse=True)
+            last_sale = all_sales_date[0].strftime('%d/%m/%Y') if all_sales_date else None
+            top_3_sales = sum(list(sorted(this_prod_sales, key=lambda sale: sale, reverse=True))[:5]) / 5
             period_sales =  [sale for sale in sales_info if sale['dtreferencia'] >= dtreferencias.get(iddetalhe)]
             only_sales = [period['qtvenda'] for period in period_sales if period['qtvenda']]
-            calc_sales[iddetalhe] = sum(only_sales)
+            calc_sales[iddetalhe] = {'total_sales': sum(only_sales), 'high_avg': top_3_sales, 'last_sale' :last_sale}
         return calc_sales
 
 class PaymentFluxFetcher:
@@ -185,7 +195,7 @@ class PaymentFluxFetcher:
             WHERE iddocumento IN ({})
         """
         formated_ids = ','.join(['%s'] * len(document_ids))
-        payment_flux_result = DatabaseHandler.execute_query(payment_flux_query.format(formated_ids), document_ids)
+        payment_flux_result = DatabaseHandler().execute_query(payment_flux_query.format(formated_ids), document_ids)
         formated_flux = {}
         for flux in payment_flux_result:
             if not flux['iddocumento'] in formated_flux:
@@ -200,53 +210,102 @@ class SalesUpdate:
             return []
 
         product_ids = [prod['iddetalhe'] for prod in products]
-        doc_info_map = DocumentInfoFetcher.fetch_document_info(product_ids)
-        products = [
-            prod for prod in products if prod['iddetalhe'] in 
-            {info['iddetalhe'] for info in doc_info_map.values()}
-        ]
-        print(datetime.now())
+        doc_info_map = DocumentInfoBuilder.fetch_document_info(product_ids)
         document_ids = [doc['iddocumento'] for doc in doc_info_map.values()]
+        valid_products = SalesUpdate.filter_valid_products(products, doc_info_map)
+        products_orders = OrderInfoBuilder.fetch_order_info(product_ids)
         payment_fluxes = PaymentFluxFetcher.fetch_payment_flux(document_ids)
-        print(datetime.now())
         dtreferencias = {doc['iddetalhe']: doc['dtreferencia'] for doc in doc_info_map.values()}
         sales_quants = SalesCalculator.calculate_sales(product_ids, dtreferencias)
-        print(datetime.now())
-        updated_products = []
-        
-        for prod in products:
-            product_id = prod['iddetalhe']
-            doc_info = doc_info_map.get(product_id)
-            document_id = doc_info['iddocumento']
-            payment_flux = payment_fluxes.get(document_id)
-            sales_quant = sales_quants.get(product_id)
-            if not doc_info:
-                continue
-            dtreferencia: datetime = doc_info['dtreferencia']
-            dtemissao = doc_info['dtemissao']
-            document_id = doc_info['iddocumento']
-            nmfornecedor = doc_info['nmpessoa']
-            prod['dura_mes'] = True
-            sales_days = (datetime.now() - dtreferencia).days
-            if sales_quant:
-                prod['dura_mes'] = (prod['qtestoque'] > ((sales_quant / sales_days) * 30))
 
-            shipping_days = (dtreferencia - dtemissao).days
-            if payment_flux:
-                prazo = [(payment['dtvencimento'] - payment['dtemissao']).days for payment in payment_flux]
-            else:
-                prazo = 'N/A'
-            prod['dtreferencia'] = dtreferencia.strftime('%d/%m/%Y')
-            prod['sales'] = sales_quant
-            prod['shipping_days'] = shipping_days
-            prod['supplier'] = nmfornecedor
-            prod['payment'] = '/'.join(map(str, prazo))
-            prod['sugestion'] = (sales_quant / sales_days * 15) if not prod['dura_mes'] else 0
-            if prod['sugestion'] > 0 and prod['sugestion'] < 3:
-                prod['sugestion'] = 3
-            updated_products.append(prod)
-            prod['sugestion'] = floor(prod['sugestion'])
+        updated_products = [
+            SalesUpdate.update_product(prod, doc_info_map, payment_fluxes, sales_quants, products_orders) 
+            for prod in valid_products
+        ]
+
         updated_products.sort(key=lambda x: datetime.strptime(x['dtreferencia'], '%d/%m/%Y'), reverse=True)
         updated_products.sort(key=lambda x: x['supplier'])
+
         return updated_products
+
+    @staticmethod
+    def filter_valid_products(products: List[dict], doc_info_map: Dict) -> List[dict]:
+        return [prod for prod in products if prod['iddetalhe'] in doc_info_map]
+
+    @staticmethod
+    def update_product(prod: dict, doc_info_map: Dict, payment_fluxes: Dict, sales_quants: Dict, products_orders: Dict) -> dict:
+        product_id = prod['iddetalhe']
+        doc_info = doc_info_map.get(product_id)
+
+        if not doc_info:
+            return prod
+       
+        document_id = doc_info['iddocumento']
+        payment_flux = payment_fluxes.get(document_id)
+        product_order = products_orders.get(product_id, 0)
+        sales_info = sales_quants.get(product_id, {})
+        sales_quant = sales_info.get('total_sales')
+        high_avg = sales_info.get('high_avg')
+        prod['last_sale'] = sales_info.get('last_sale')
+        last_sale_date = datetime.strptime(prod['last_sale'], '%d/%m/%Y') if prod['last_sale'] else datetime.now()
+
+        dtreferencia = doc_info['dtreferencia']
+        dtemissao = doc_info['dtemissao']
+        nmfornecedor = doc_info['nmpessoa']
+
+        prod['dura_mes'] = SalesUpdate.calculate_dura_mes(prod, sales_quant, last_sale_date, dtreferencia)
+        shipping_days = (dtreferencia - dtemissao).days
+        prazo = SalesUpdate.calculate_prazo(payment_flux)
+
+        prod.update({
+            'dtreferencia': dtreferencia.strftime('%d/%m/%Y'),
+            'sales': sales_quant,
+            'shipping_days': shipping_days,
+            'supplier': nmfornecedor,
+            'stock_min': SalesUpdate.calculate_stock_min(high_avg, sales_quant, shipping_days, last_sale_date, dtreferencia),
+            'sugestion': SalesUpdate.calculate_sugestion(sales_quant, prod['dura_mes'])
+        })
+
+        if 0 < prod['sugestion'] < 3:
+            prod['sugestion'] = 3
+       
+        prod['sugestion'] = floor(prod['sugestion']) - product_order
+        prod['stock_max'] = SalesUpdate.calculate_stock_max(prod['stock_min'], sales_quant, shipping_days)
+
+        if sales_quant and (last_sale_date - dtreferencia).days > 0:
+            prod['dura_mes'] = (prod['qtestoque'] > prod['sugestion'])
+
+        return prod
+
+    @staticmethod
+    def calculate_dura_mes(prod: dict, sales_quant: int, last_sale_date: datetime, dtreferencia: datetime) -> bool:
+        if not sales_quant:
+            return True
+        sales_days = (last_sale_date - dtreferencia).days
+        return sales_days <= 0 or (prod['qtestoque'] > ((sales_quant / sales_days) * 30))
+
+    @staticmethod
+    def calculate_prazo(payment_flux: list) -> list:
+        if payment_flux:
+            return [(payment['dtvencimento'] - payment['dtemissao']).days for payment in payment_flux]
+        return 'N/A'
+
+    @staticmethod
+    def calculate_stock_min(high_avg: float, sales_quant: int, shipping_days: int, last_sale_date: datetime, dtreferencia: datetime) -> int:
+        sales_days = (last_sale_date - dtreferencia).days
+        return int(high_avg + (sales_quant / sales_days * shipping_days) if sales_days > 0 else high_avg)
+
+    @staticmethod
+    def calculate_sugestion(sales_quant: int, dura_mes: bool) -> float:
+        if dura_mes or sales_quant == 0:
+            return 0
+        return sales_quant / 30 * 15
+
+    @staticmethod
+    def calculate_stock_max(stock_min: int, sales_quant: int, shipping_days: int) -> int:
+        if sales_quant == 0:
+            return 3
+        stock_max = stock_min + (sales_quant / 30 * shipping_days)
+        return max(3, int(stock_max))
+
 
