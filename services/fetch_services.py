@@ -265,13 +265,16 @@ class SalesUpdate:
             'stock_min': SalesUpdate.calculate_stock_min(high_avg, sales_quant, shipping_days, last_sale_date, dtreferencia),
             'sugestion': SalesUpdate.calculate_sugestion(sales_quant, prod['dura_mes'])
         })
-
-        if 0 < prod['sugestion'] < 3:
-            prod['sugestion'] = 3
        
         prod['sugestion'] = floor(prod['sugestion']) - product_order
         prod['stock_max'] = SalesUpdate.calculate_stock_max(prod['stock_min'], sales_quant, shipping_days)
+        
+        if prod['qtestoque'] < prod['stock_min']:
+            prod['sugestion'] = prod['stock_max'] - prod['qtestoque']
 
+        if prod['qtestoque'] >= prod['stock_max']:
+            prod['sugestion'] = 0
+        
         if sales_quant and (last_sale_date - dtreferencia).days > 0:
             prod['dura_mes'] = (prod['qtestoque'] > prod['sugestion'])
 
