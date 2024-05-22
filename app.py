@@ -19,16 +19,14 @@ CORS(app)
 
 @app.route("/")
 def index_page():
-    prods = ProductFetcher.fetch_all_prods()
+    suppliers = ProductFetcher.fetch_all_suppliers()
     groups = ProductFetcher.fetch_all_prod_groups()
     families = ProductFetcher.fetch_all_prod_family()
-    context = {'prods': prods, 'groups': groups, 'families': families}
+    context = {'fornecedores': suppliers, 'groups': groups, 'families': families}
     return render_template('index.html', **context)
 
 @app.route("/lista_compras")
 def list_compras():
-
-    
     data = request.args.get('data', False)
     if data:
         parsed_data = json.loads(data)

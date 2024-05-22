@@ -36,8 +36,12 @@ class ProductFetcher:
         return DatabaseHandler().execute_query(query)
 
     @staticmethod
-    def fetch_all_prods():
-        query = "SELECT iddetalhe, dsdetalhe FROM wshop.detalhe WHERE stdetalheativo = true"
+    def fetch_all_suppliers():
+        query = """
+            SELECT idpessoa, nmpessoa FROM wshop.pessoas
+            WHERE sttipopessoa = 'F'
+            ORDER BY nmpessoa ASC
+        """
         return DatabaseHandler().execute_query(query)
     
 class ProductQueryBuilder:

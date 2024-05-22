@@ -208,27 +208,27 @@ footer a:hover {
     <div class="main-container">
         <main class="content">
             <div class="filters-containers">
-                <!-- Produtos Dropdown -->
-                <div class="dropdown" style="display: none;">
-                    <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButtonProd" data-bs-toggle="dropdown" aria-expanded="false" style="width: 25%;">
-                        Produtos <i class="fa fa-search" aria-hidden="true"></i>
+                <!-- Fornecedores Dropdown -->
+                <div class="dropdown">
+                    <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButtonFornecedor" data-bs-toggle="dropdown" aria-expanded="false" style="width: 25%;">
+                        Fornecedores <i class="fa fa-search" aria-hidden="true"></i>
                     </button>
-                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButtonProd">
-                        <input type="text" class="form-control form-control-sm mb-2" id="searchInputProd" placeholder="Pesquisar">
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButtonFornecedor">
+                        <input type="text" class="form-control form-control-sm mb-2" id="searchInputFornecedor" placeholder="Pesquisar">
                         <div class="dropdown-divider"></div>
                         <div class="dropdown-item">
-                            <a href="#" id="selectAllProd" class="select-all-link">Selecionar Tudo</a>
+                            <a href="#" id="selectAllFornecedor" class="select-all-link">Selecionar Tudo</a>
                         </div>
                         <div class="dropdown-item">
-                            <a href="#" id="deselectAllProd" class="select-all-link">Desselecionar Tudo</a>
+                            <a href="#" id="deselectAllFornecedor" class="select-all-link">Desselecionar Tudo</a>
                         </div>
-                        <ul class="list-unstyled" id="checkboxListProd">
-                            {% for prod in prods %}
+                        <ul class="list-unstyled" id="checkboxListFornecedor">
+                            {% for fornecedor in fornecedores %}
                             <li class="checkbox-item">
                                 <a class="dropdown-item" href="#">
                                     <div class="form-check">
-                                        <input class="form-check-input prod" type="checkbox" value="{{ prod }}" id="CheckProd{{ loop.index }}">
-                                        <label class="form-check-label" for="CheckProd{{ loop.index }}">{{ prod['dsdetalhe'] }}</label>
+                                        <input class="form-check-input fornecedor" type="checkbox" value="{{ fornecedor }}" id="CheckFornecedor{{ loop.index }}">
+                                        <label class="form-check-label" for="CheckFornecedor{{ loop.index }}">{{ fornecedor['nmpessoa'] }}</label>
                                     </div>
                                 </a>
                             </li>
@@ -315,113 +315,10 @@ footer a:hover {
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+    <script src="/static/js/getSelectedItens.js" ></script>
+    <script src="/static/js/selectAllItens.js" ></script>
     <script>
-        document.getElementById('submitButton').addEventListener('click', function(event) {
-            event.preventDefault();
-
-            function getSelectedItems(selector) {
-                var selectedItems = [];
-                document.querySelectorAll(selector + ':checked').forEach(item => {
-                    selectedItems.push(item.value);
-                });
-                return selectedItems;
-            }
-
-            var loadingModal = document.querySelector('.lds-roller');
-            loadingModal.style.display = 'inline-block';
-            // Obter itens selecionados em cada dropdown
-            var selectedProds = getSelectedItems('.prod');
-            var selectedGroups = getSelectedItems('.group');
-            var selectedFamilies = getSelectedItems('.family');
-
-            // Criar objeto com os arrays selecionados
-            var data = {
-                "selectedProds": selectedProds,
-                "selectedGroups": selectedGroups,
-                "selectedFamilies": selectedFamilies
-            };
-
-            // Converter o objeto em uma string JSON
-            var jsonData = JSON.stringify(data);
-
-            // Construir a URL com os dados JSON como parte do corpo da solicitação GET
-            var url = 'http://192.168.0.28:5000/lista_compras?data=' + encodeURIComponent(jsonData);
-
-            // Enviar solicitação GET
-            fetch(url)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Ocorreu um erro ao obter os dados.');
-                }
-                return response.json();
-            })
-            .then(responseData => {
-                loadingModal.style.display = 'none';
-                window.location.href = 'http://192.168.0.28:5000/informacoes';
-            })
-            .catch(error => {
-                console.error('Erro:', error);
-                // Lidar com o erro, se necessário
-            });
-        });
-
-        // Função para selecionar ou desselecionar todos os checkboxes do dropdown de Produtos
-        function toggleAllProds(checked) {
-            document.querySelectorAll('.prod').forEach(item => {
-                item.checked = checked;
-            });
-        }
-    
-        // Evento de clique para a opção "Selecionar Tudo" no dropdown de Produtos
-        document.getElementById('selectAllProd').addEventListener('click', function(event) {
-            event.preventDefault();
-            toggleAllProds(true);
-        });
-    
-        // Evento de clique para a opção "Desselecionar Tudo" no dropdown de Produtos
-        document.getElementById('deselectAllProd').addEventListener('click', function(event) {
-            event.preventDefault();
-            toggleAllProds(false);
-        });
-    
-        // Função para selecionar ou desselecionar todos os checkboxes do dropdown de Grupos
-        function toggleAllGroups(checked) {
-            document.querySelectorAll('.group').forEach(item => {
-                item.checked = checked;
-            });
-        }
-    
-        // Evento de clique para a opção "Selecionar Tudo" no dropdown de Grupos
-        document.getElementById('selectAllGroup').addEventListener('click', function(event) {
-            event.preventDefault();
-            toggleAllGroups(true);
-        });
-    
-        // Evento de clique para a opção "Desselecionar Tudo" no dropdown de Grupos
-        document.getElementById('deselectAllGroup').addEventListener('click', function(event) {
-            event.preventDefault();
-            toggleAllGroups(false);
-        });
-    
-        // Função para selecionar ou desselecionar todos os checkboxes do dropdown de Famílias
-        function toggleAllFamilies(checked) {
-            document.querySelectorAll('.family').forEach(item => {
-                item.checked = checked;
-            });
-        }
-    
-        // Evento de clique para a opção "Selecionar Tudo" no dropdown de Famílias
-        document.getElementById('selectAllFamily').addEventListener('click', function(event) {
-            event.preventDefault();
-            toggleAllFamilies(true);
-        });
-    
-        // Evento de clique para a opção "Desselecionar Tudo" no dropdown de Famílias
-        document.getElementById('deselectAllFamily').addEventListener('click', function(event) {
-            event.preventDefault();
-            toggleAllFamilies(false);
-        });
-    
+        
         function filterItems(inputId, listId) {
             var input, filter, ul, li, a, i, txtValue;
             input = document.getElementById(inputId);
@@ -440,8 +337,8 @@ footer a:hover {
         }
     
         // Adicionar eventos de entrada para as barras de pesquisa
-        document.getElementById('searchInputProd').addEventListener('input', function() {
-            filterItems('searchInputProd', 'checkboxListProd');
+        document.getElementById('searchInputFornecedor').addEventListener('input', function() {
+            filterItems('searchInputFornecedor', 'checkboxListFornecedor');
         });
         document.getElementById('searchInputGroup').addEventListener('input', function() {
             filterItems('searchInputGroup', 'checkboxListGroup');
