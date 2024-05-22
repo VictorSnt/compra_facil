@@ -44,9 +44,25 @@ class ProductFetcher:
         """
         return DatabaseHandler().execute_query(query)
     
-class ProductQueryBuilder:
+
+class ProductFilter:
+    @staticmethod
+    def filter_by_family_n_groups(data):
+        groups = DataParser.parse_selected_items(data['selectedGroups'])
+        families = DataParser.parse_selected_items(data['selectedFamilies'])
+        query = ProductFilter.build_products_query(groups, families)
+        return DatabaseHandler().execute_query(query) or []
+
+    @staticmethod
+    def filter_by_suppliers(data):
+        suppliers = DataParser.parse_selected_items(data['selectedSuppliers'])
+        sup_ids_string = ",".join([f"'{sup['idpessoa']}'" for sup in suppliers])
+        query = ProductFilter.build_supplied_by_query(sup_ids_string)
+        return DatabaseHandler().execute_query(query) or []
+
     @staticmethod
     def build_products_query(groups, families):
+        
         group_values = ",".join([f"'{g['idgrupo']}'" for g in groups])
         family_values = ",".join([f"'{f['idfamilia']}'" for f in families])
 
@@ -60,16 +76,16 @@ class ProductQueryBuilder:
         where = 'WHERE stdetalheativo = true AND'
 
         return f'{select_all} {join} {where} {prod_filter}'
-
-class ProductFilter:
-    @staticmethod
-    def filter_products(data):
-        groups = DataParser.parse_selected_items(data['selectedGroups'])
-        families = DataParser.parse_selected_items(data['selectedFamilies'])
-        
-        query = ProductQueryBuilder.build_products_query(groups, families)
-        return DatabaseHandler().execute_query(query)
-
+    
+    def build_supplied_by_query(ids):
+        query = """
+        SELECT DISTINCT det.iddetalhe, det.cdprincipal, det.dsdetalhe FROM wshop.docitem as item
+        JOIN wshop.detalhe as det on det.iddetalhe = item.iddetalhe
+        JOIN wshop.documen as doc on doc.iddocumento = item.iddocumento
+        WHERE doc.idpessoa IN ({})  
+        """
+        return query.format(ids) 
+    
 class StockUpdater:
     @staticmethod
     def join_products_stock(products: List[dict]) -> List[dict]:
@@ -300,19 +316,19 @@ class SalesUpdate:
     @staticmethod
     def calculate_stock_min(high_avg: float, sales_quant: int, shipping_days: int, last_sale_date: datetime, dtreferencia: datetime) -> int:
         sales_days = (last_sale_date - dtreferencia).days
-        return int(high_avg + (sales_quant / sales_days * shipping_days) if sales_days > 0 else high_avg)
+        return int(high_avg + (sales_quant / sales_days * (15 + shipping_days)) if sales_days > 0 else high_avg)
 
     @staticmethod
     def calculate_sugestion(sales_quant: int, dura_mes: bool) -> float:
         if dura_mes or sales_quant == 0:
             return 0
-        return sales_quant / 30 * 15
+        return sales_quant / 30 * 30
 
     @staticmethod
     def calculate_stock_max(stock_min: int, sales_quant: int, shipping_days: int) -> int:
         if sales_quant == 0:
             return 3
-        stock_max = stock_min + (sales_quant / 30 * shipping_days)
+        stock_max = stock_min + (sales_quant / 30 * (30 + shipping_days))
         return max(3, int(stock_max))
 
 

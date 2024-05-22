@@ -30,11 +30,10 @@ def list_compras():
     data = request.args.get('data', False)
     if data:
         parsed_data = json.loads(data)
-    
-        filtered_products = ProductFilter.filter_products(parsed_data)
-    
-        updated_products = StockUpdater.join_products_stock(filtered_products)
-    
+        filtered_products = ProductFilter.filter_by_family_n_groups(parsed_data)
+        supplier_products = ProductFilter.filter_by_suppliers(parsed_data)
+        all_products = filtered_products + supplier_products
+        updated_products = StockUpdater.join_products_stock(all_products)
         result = SalesUpdate.join_product_sales(updated_products)
     
         with open(report_path, 'w+') as file:
