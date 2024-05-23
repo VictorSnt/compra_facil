@@ -1,7 +1,7 @@
 from auth.database import DatabaseHandler
 from datetime import datetime
 from typing import List, Dict
-from math import floor
+from math import floor, ceil
 import json
 import re
 
@@ -287,7 +287,7 @@ class SalesUpdate:
         })
        
         prod['sugestion'] = floor(prod['sugestion']) - product_order
-        prod['stock_max'] = SalesUpdate.calculate_stock_max(prod['stock_min'], sales_quant, shipping_days)
+        prod['stock_max'] = SalesUpdate.calculate_stock_max(prod['stock_min'], sales_quant, last_sale_date, dtreferencia)
         
         if prod['qtestoque'] < prod['stock_min']:
             prod['sugestion'] = prod['stock_max'] - prod['qtestoque']
@@ -314,21 +314,33 @@ class SalesUpdate:
         return 'N/A'
 
     @staticmethod
-    def calculate_stock_min(high_avg: float, sales_quant: int, shipping_days: int, last_sale_date: datetime, dtreferencia: datetime) -> int:
-        sales_days = (last_sale_date - dtreferencia).days
-        return int(high_avg + (sales_quant / sales_days * (15 + shipping_days)) if sales_days > 0 else high_avg)
-
-    @staticmethod
     def calculate_sugestion(sales_quant: int, dura_mes: bool) -> float:
         if dura_mes or sales_quant == 0:
             return 0
         return sales_quant / 30 * 30
+    
+    @staticmethod
+    def calculate_stock_min(
+            high_avg: float, sales_quant: int, shipping_days: int, 
+            last_sale_date: datetime, dtreferencia: datetime
+        ) -> int:
+        try:
+            sales_days = (last_sale_date - dtreferencia).days
+            daily_avg = sales_quant / sales_days
+            possible_delay = 1.8
+            quotation_period = 2
+            reposition_period = ceil(shipping_days * possible_delay + quotation_period)  
+            return int(high_avg + daily_avg * reposition_period if sales_days > 0 else high_avg)
+        except ZeroDivisionError:
+            return high_avg
 
     @staticmethod
-    def calculate_stock_max(stock_min: int, sales_quant: int, shipping_days: int) -> int:
-        if sales_quant == 0:
+    def calculate_stock_max(stock_min: int, sales_quant: int, last_sale_date: datetime, dtreferencia: datetime) -> int:
+        try:
+            sales_days = (last_sale_date - dtreferencia).days
+            daily_avg = sales_quant / sales_days
+            stock_max = stock_min + daily_avg * 30
+            return max(3, int(stock_max))
+        except ZeroDivisionError:
             return 3
-        stock_max = stock_min + (sales_quant / 30 * (30 + shipping_days))
-        return max(3, int(stock_max))
-
 
