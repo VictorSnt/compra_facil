@@ -82,7 +82,7 @@ class ProductFilter:
         SELECT DISTINCT det.iddetalhe, det.cdprincipal, det.dsdetalhe FROM wshop.docitem as item
         JOIN wshop.detalhe as det on det.iddetalhe = item.iddetalhe
         JOIN wshop.documen as doc on doc.iddocumento = item.iddocumento
-        WHERE doc.idpessoa IN ({})  
+        WHERE doc.idpessoa IN ({})  AND det.stdetalheativo = TRUE
         """
         return query.format(ids) 
     
@@ -243,8 +243,8 @@ class SalesUpdate:
             for prod in valid_products
         ]
 
+
         updated_products.sort(key=lambda x: datetime.strptime(x['dtreferencia'], '%d/%m/%Y'), reverse=True)
-        updated_products.sort(key=lambda x: x['supplier'])
 
         return updated_products
 
@@ -282,12 +282,11 @@ class SalesUpdate:
             'sales': sales_quant,
             'shipping_days': shipping_days,
             'supplier': nmfornecedor,
-            'stock_min': SalesUpdate.calculate_stock_min(high_avg, sales_quant, shipping_days, last_sale_date, dtreferencia),
+            'stock_min': SalesUpdate.calculate_stock_min(prod, high_avg, sales_quant, shipping_days, last_sale_date, dtreferencia),
             'sugestion': SalesUpdate.calculate_sugestion(sales_quant, prod['dura_mes'])
         })
-       
-        prod['sugestion'] = floor(prod['sugestion']) - product_order
-        prod['stock_max'] = SalesUpdate.calculate_stock_max(prod['stock_min'], sales_quant, last_sale_date, dtreferencia)
+        prod['stock_max'] = SalesUpdate.calculate_stock_max(prod, prod['stock_min'], sales_quant, last_sale_date, dtreferencia)
+        prod['sugestion'] = floor(prod['sugestion'])
         
         if prod['qtestoque'] < prod['stock_min']:
             prod['sugestion'] = prod['stock_max'] - prod['qtestoque']
@@ -295,16 +294,24 @@ class SalesUpdate:
         if prod['qtestoque'] >= prod['stock_max']:
             prod['sugestion'] = 0
         
-        if sales_quant and (last_sale_date - dtreferencia).days > 0:
+        sales_days = (last_sale_date - dtreferencia).days if prod['qtestoque'] <= 0 else (datetime.now() - dtreferencia).days
+        if sales_quant and sales_days > 0:
             prod['dura_mes'] = (prod['qtestoque'] > prod['sugestion'])
 
+        prod['sugestion'] -= product_order
+
+        if prod['qtestoque'] + prod['sugestion']  >= prod['stock_max']:
+            prod['sugestion'] = prod['stock_max'] - prod['qtestoque']
+        
+        prod['dura_mes'] = True if prod['sugestion'] <= 0 else False
+        prod['sugestion'] = 0 if prod['sugestion'] < 0 else prod['sugestion']
         return prod
 
     @staticmethod
     def calculate_dura_mes(prod: dict, sales_quant: int, last_sale_date: datetime, dtreferencia: datetime) -> bool:
         if not sales_quant:
             return True
-        sales_days = (last_sale_date - dtreferencia).days
+        sales_days = (last_sale_date - dtreferencia).days if prod['qtestoque'] <= 0 else (datetime.now() - dtreferencia).days 
         return sales_days <= 0 or (prod['qtestoque'] > ((sales_quant / sales_days) * 30))
 
     @staticmethod
@@ -321,11 +328,11 @@ class SalesUpdate:
     
     @staticmethod
     def calculate_stock_min(
-            high_avg: float, sales_quant: int, shipping_days: int, 
+            prod, high_avg: float, sales_quant: int, shipping_days: int, 
             last_sale_date: datetime, dtreferencia: datetime
         ) -> int:
         try:
-            sales_days = (last_sale_date - dtreferencia).days
+            sales_days = (last_sale_date - dtreferencia).days if prod['qtestoque'] <= 0 else (datetime.now() - dtreferencia).days 
             daily_avg = sales_quant / sales_days
             possible_delay = 1.8
             quotation_period = 2
@@ -335,9 +342,9 @@ class SalesUpdate:
             return high_avg
 
     @staticmethod
-    def calculate_stock_max(stock_min: int, sales_quant: int, last_sale_date: datetime, dtreferencia: datetime) -> int:
+    def calculate_stock_max(prod, stock_min: int, sales_quant: int, last_sale_date: datetime, dtreferencia: datetime) -> int:
         try:
-            sales_days = (last_sale_date - dtreferencia).days
+            sales_days = (last_sale_date - dtreferencia).days if prod['qtestoque'] <= 0 else (datetime.now() - dtreferencia).days 
             daily_avg = sales_quant / sales_days
             stock_max = stock_min + daily_avg * 30
             return max(3, int(stock_max))

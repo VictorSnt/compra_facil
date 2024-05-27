@@ -24,7 +24,7 @@ document.getElementById('submitButton').addEventListener('click', function(event
     var jsonData = JSON.stringify(data);
     console.log(data)
     // Construir a URL com os dados JSON como parte do corpo da solicitação GET
-    var url = 'http://10.1.10.50:5000/lista_compras?data=' + encodeURIComponent(jsonData);
+    var url = 'http://192.168.0.28:5000/lista_compras?data=' + encodeURIComponent(jsonData);
 
     // Enviar solicitação GET
     fetch(url)
@@ -36,7 +36,7 @@ document.getElementById('submitButton').addEventListener('click', function(event
     })
     .then(responseData => {
         loadingModal.style.display = 'none';
-        window.location.href = 'http://10.1.10.50:5000/informacoes';
+        window.location.href = 'http://192.168.0.28:5000/informacoes';
     })
     .catch(error => {
         console.error('Erro:', error);
