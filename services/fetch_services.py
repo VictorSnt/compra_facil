@@ -28,12 +28,18 @@ class ProductFetcher:
     @staticmethod
     def fetch_all_prod_family():
         query = "SELECT idfamilia, dsfamilia FROM wshop.familia"
-        return DatabaseHandler().execute_query(query)
+        data = DatabaseHandler().execute_query(query)
+        for d in data:
+            d['dsfamilia'] = d['dsfamilia'].replace("'",'')
+        return data 
 
     @staticmethod
     def fetch_all_prod_groups():
         query = "SELECT idgrupo, nmgrupo FROM wshop.grupo"
-        return DatabaseHandler().execute_query(query)
+        data = DatabaseHandler().execute_query(query)
+        for d in data:
+            d['nmgrupo'] = d['nmgrupo'].replace("'",'')
+        return data 
 
     @staticmethod
     def fetch_all_suppliers():
@@ -42,8 +48,9 @@ class ProductFetcher:
             WHERE sttipopessoa = 'F'
             ORDER BY nmpessoa ASC
         """
-        return DatabaseHandler().execute_query(query)
-    
+        data = DatabaseHandler().execute_query(query)
+        return data 
+
 
 class ProductFilter:
     @staticmethod
