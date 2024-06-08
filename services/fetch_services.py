@@ -281,7 +281,7 @@ class SalesUpdate:
         nmfornecedor = doc_info['nmpessoa']
 
         prod['dura_mes'] = SalesUpdate.calculate_dura_mes(prod, sales_quant, last_sale_date, dtreferencia)
-        shipping_days = (dtreferencia - dtemissao).days
+        shipping_days = 7
         prazo = SalesUpdate.calculate_prazo(payment_flux)
 
         prod.update({
@@ -319,7 +319,7 @@ class SalesUpdate:
         if not sales_quant:
             return True
         sales_days = (last_sale_date - dtreferencia).days if prod['qtestoque'] <= 0 else (datetime.now() - dtreferencia).days 
-        return sales_days <= 0 or (prod['qtestoque'] > ((sales_quant / sales_days) * 30))
+        return sales_days <= 0 or (prod['qtestoque'] > ((sales_quant / sales_days) * 55))
 
     @staticmethod
     def calculate_prazo(payment_flux: list) -> list:
@@ -331,7 +331,7 @@ class SalesUpdate:
     def calculate_sugestion(sales_quant: int, dura_mes: bool) -> float:
         if dura_mes or sales_quant == 0:
             return 0
-        return sales_quant / 30 * 30
+        return sales_quant / 55 * 55
     
     @staticmethod
     def calculate_stock_min(
@@ -353,7 +353,7 @@ class SalesUpdate:
         try:
             sales_days = (last_sale_date - dtreferencia).days if prod['qtestoque'] <= 0 else (datetime.now() - dtreferencia).days 
             daily_avg = sales_quant / sales_days
-            stock_max = stock_min + daily_avg * 30
+            stock_max = stock_min + daily_avg * 55
             return max(3, int(stock_max))
         except ZeroDivisionError:
             return 3
