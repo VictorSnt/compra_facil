@@ -1,7 +1,7 @@
-import datetime
-from services.fetch_services import (ProductFilter, StockUpdater, ProductFetcher, 
+from services.fetch_services import (ProductFilter, StockUpdater,
     SalesUpdate
 )
+from services.products_finder import ProductFinder
 from flask import Flask, jsonify, render_template, request, send_file
 from dotenv import load_dotenv
 from openpyxl import Workbook, load_workbook
@@ -19,9 +19,10 @@ CORS(app)
 
 @app.route("/")
 def index_page():
-    suppliers = ProductFetcher.fetch_all_suppliers()
-    groups = ProductFetcher.fetch_all_prod_groups()
-    families = ProductFetcher.fetch_all_prod_family()
+    finder = ProductFinder()
+    suppliers = finder.fetch_all_suppliers()
+    groups = finder.fetch_all_prod_groups()
+    families = finder.fetch_all_prod_family()
     context = {'fornecedores': suppliers, 'groups': groups, 'families': families}
     return render_template('index.html', **context)
 

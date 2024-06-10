@@ -1,77 +1,32 @@
 from auth.database import DatabaseHandler
+from services.jsonifier import Jsonyfier
 from datetime import datetime
 from typing import List, Dict
 from math import floor, ceil
-import json
-import re
-
-
-class DataParser:
-
-    @staticmethod
-    def parse_selected_items(selected_items):
-        parsed_items = []
-        for item in selected_items:
-            try:
-                json_format = item.replace("'", '"')
-                parsed_item = json.loads(json_format)
-                parsed_items.append(parsed_item)
-            except json.JSONDecodeError:
-                regex = r'("[^"]*")([^"]*")'
-                json_corrected = re.sub(regex, r'\1', json_format)
-                input(json_corrected)
-                parsed_item = json.loads(json_corrected)
-                parsed_items.append(parsed_item)
-        return parsed_items
-
-class ProductFetcher:
-    @staticmethod
-    def fetch_all_prod_family():
-        query = "SELECT idfamilia, dsfamilia FROM wshop.familia"
-        data = DatabaseHandler().execute_query(query)
-        for d in data:
-            d['dsfamilia'] = d['dsfamilia'].replace("'",'')
-        return data 
-
-    @staticmethod
-    def fetch_all_prod_groups():
-        query = "SELECT idgrupo, nmgrupo FROM wshop.grupo"
-        data = DatabaseHandler().execute_query(query)
-        for d in data:
-            d['nmgrupo'] = d['nmgrupo'].replace("'",'')
-        return data 
-
-    @staticmethod
-    def fetch_all_suppliers():
-        query = """
-            SELECT idpessoa, nmpessoa FROM wshop.pessoas
-            WHERE sttipopessoa = 'F'
-            ORDER BY nmpessoa ASC
-        """
-        data = DatabaseHandler().execute_query(query)
-        return data 
 
 
 class ProductFilter:
     @staticmethod
     def filter_by_family_n_groups(data):
-        groups = DataParser.parse_selected_items(data['selectedGroups'])
-        families = DataParser.parse_selected_items(data['selectedFamilies'])
+        
+        groups = Jsonyfier.parse(data['selectedGroups'])
+        families = Jsonyfier.parse(data['selectedFamilies'])
         query = ProductFilter.build_products_query(groups, families)
         return DatabaseHandler().execute_query(query) or []
 
     @staticmethod
     def filter_by_suppliers(data):
-        suppliers = DataParser.parse_selected_items(data['selectedSuppliers'])
+        suppliers = Jsonyfier.parse(data['selectedSuppliers'])
         sup_ids_string = ",".join([f"'{sup['idpessoa']}'" for sup in suppliers])
         query = ProductFilter.build_supplied_by_query(sup_ids_string)
         return DatabaseHandler().execute_query(query) or []
 
     @staticmethod
     def build_products_query(groups, families):
-        
-        group_values = ",".join([f"'{g['idgrupo']}'" for g in groups])
-        family_values = ",".join([f"'{f['idfamilia']}'" for f in families])
+        group_values = ",".join([f"'{g['idgrupo']}'" for g in groups if groups])
+        print(groups)
+        print(families)
+        family_values = ",".join([f"'{f['idfamilia']}'" for f in families if families])
 
         group_filter = f'prod.idgrupo in ({group_values})'
         families_filter = f'det.idfamilia in ({family_values})'
