@@ -10,6 +10,13 @@ from src.services.fetch_services import StockUpdater, SalesUpdate
 from src.services.products_finder import ProductFinder
 from src.services.product_services import ProductServices
 from src.database.sql_operator import SQLOperator
+from src.repository.pessoaRepository import PessoaRepository
+from src.model.pessoa import Pessoa
+from src.model.document import Document
+from src.model.docitem import Docitem
+
+from src.database.db_session_maker import Session_Maker
+
 
 load_dotenv()
 report_path = Path(getenv('STATIC') + 'report.json')
@@ -19,16 +26,21 @@ spreadsheet_path = Path(getenv('STATIC') + 'pedido.xlsx')
 app = Flask(__name__)
 CORS(app)
 
+
 class HomePage(MethodView):
     def get(self):
         finder = ProductFinder()
+        session_maker = Session_Maker()
+        session = session_maker.create_session()
+        pessoa_repo = PessoaRepository(session, Pessoa)
+        reponse = pessoa_repo.find_all_suppliers()
+        input(reponse)
         suppliers = finder.find_all_suppliers()
         groups = finder.find_all_prod_groups()
         families = finder.find_all_prod_family()
-        context = {'fornecedores': suppliers, 'groups': groups, 'families': families}
-        return jsonify(context)
+        response = {'fornecedores': suppliers, 'groups': groups, 'families': families}
+        return jsonify(response)
         
-
 class ListaCompras(MethodView):
     def get(self):
         data = request.args.get('data', False)
@@ -42,7 +54,6 @@ class ListaCompras(MethodView):
             updated_products = StockUpdater.join_products_stock(all_products)
             result = SalesUpdate.join_product_sales(updated_products)
             
-           
             with open(report_path, 'w+') as file:
                 json.dump(result, file, indent=4)
                 

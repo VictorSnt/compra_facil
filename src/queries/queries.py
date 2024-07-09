@@ -26,7 +26,7 @@ get_suppliers = """
 SELECT 
     idpessoa, nmpessoa 
 FROM 
-    wshop.pessoas
+    wshop.Pessoa
 WHERE 
     sttipopessoa = 'F'
 ORDER BY 
