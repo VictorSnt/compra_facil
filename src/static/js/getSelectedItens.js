@@ -4,25 +4,27 @@ document.getElementById('submitButton').addEventListener('click', function(event
     function getSelectedItems(selector) {
         var selectedItems = [];
         document.querySelectorAll(selector + ':checked').forEach(item => {
-            selectedItems.push(item.value);
+            selectedItems.push(JSON.parse(item.value)); // Converte o valor de volta para objeto JSON
         });
         return selectedItems;
     }
 
     var loadingModal = document.querySelector('.lds-roller');
     loadingModal.style.display = 'inline-block';
+
     var selectedSuppliers = getSelectedItems('.fornecedor');
     var selectedGroups = getSelectedItems('.group');
     var selectedFamilies = getSelectedItems('.family');
+
     var data = {
         "selectedSuppliers": selectedSuppliers,
         "selectedGroups": selectedGroups,
         "selectedFamilies": selectedFamilies
     };
-    console.log(data)
+
     // Converter o objeto em uma string JSON
     var jsonData = JSON.stringify(data);
-    console.log(data)
+    console.log(jsonData)
     // Construir a URL com os dados JSON como parte do corpo da solicitação GET
     var url = 'http://192.168.0.28:5000/lista_compras?data=' + encodeURIComponent(jsonData);
 

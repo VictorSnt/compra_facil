@@ -1,52 +1,12 @@
-from auth.database import DatabaseHandler
-from services.jsonifier import Jsonyfier
+from src.database.sql_operator import SQLOperator
 from datetime import datetime
 from typing import List, Dict
 from math import floor, ceil
 
 
-class ProductFilter:
-    @staticmethod
-    def filter_by_family_n_groups(data):
+
         
-        groups = Jsonyfier.parse(data['selectedGroups'])
-        families = Jsonyfier.parse(data['selectedFamilies'])
-        query = ProductFilter.build_products_query(groups, families)
-        return DatabaseHandler().execute_query(query) or []
-
-    @staticmethod
-    def filter_by_suppliers(data):
-        suppliers = Jsonyfier.parse(data['selectedSuppliers'])
-        sup_ids_string = ",".join([f"'{sup['idpessoa']}'" for sup in suppliers])
-        query = ProductFilter.build_supplied_by_query(sup_ids_string)
-        return DatabaseHandler().execute_query(query) or []
-
-    @staticmethod
-    def build_products_query(groups, families):
-        group_values = ",".join([f"'{g['idgrupo']}'" for g in groups if groups])
-        family_values = ",".join([f"'{f['idfamilia']}'" for f in families if families])
-
-        group_filter = f'prod.idgrupo in ({group_values})'
-        families_filter = f'det.idfamilia in ({family_values})'
         
-        prod_filter = f'{group_filter} or {families_filter}' if groups and families else group_filter if groups else families_filter
-
-        select_all = 'SELECT det.iddetalhe, det.cdprincipal, det.dsdetalhe from wshop.detalhe as det'
-        join = 'JOIN wshop.produto as prod on prod.idproduto = det.idproduto'
-        where = 'WHERE stdetalheativo = true AND'
-
-        return f'{select_all} {join} {where} {prod_filter}'
-    
-    def build_supplied_by_query(ids):
-        query = """
-        SELECT DISTINCT det.iddetalhe, det.cdprincipal, det.dsdetalhe FROM wshop.docitem as item
-        JOIN wshop.detalhe as det on det.iddetalhe = item.iddetalhe
-        JOIN wshop.documen as doc on doc.iddocumento = item.iddocumento
-        WHERE doc.idpessoa IN ({})  AND det.stdetalheativo = TRUE
-        """
-        return query.format(ids)
-    
-    
 class StockUpdater:
     @staticmethod
     def join_products_stock(products: List[dict]) -> List[dict]:
@@ -65,7 +25,7 @@ class StockUpdater:
             WHERE e.iddetalhe IN ({})
         """.format(','.join(['%s'] * len(product_ids)))
 
-        stock_response = DatabaseHandler().execute_query(stock_query, tuple(product_ids))
+        stock_response = SQLOperator().execute_query(stock_query, tuple(product_ids))
         stock_map = {stock['iddetalhe']: stock['qtestoque'] for stock in stock_response}
         updated_products = []
         for product in products:
@@ -90,7 +50,7 @@ class OrderInfoBuilder:
             JOIN wshop.peditem AS pitem ON ped.idpedido = pitem.idpedido
             WHERE ped.cdstatus = 'Aberto' AND pitem.iddetalhe IN ({})
         """.format(','.join(['%s'] * len(product_ids)))
-        orders_response = DatabaseHandler().execute_query(order_info_query, tuple(product_ids))
+        orders_response = SQLOperator().execute_query(order_info_query, tuple(product_ids))
         mapped_orders = {order['iddetalhe']: order['qtpedida'] for order in orders_response}
         return mapped_orders
 
@@ -146,7 +106,7 @@ WHERE
         """
         formated_ids = ','.join(['%s'] * len(product_ids))
         doc_info_query = doc_info_query.format(formated_ids, formated_ids)
-        doc_info_results = DatabaseHandler().execute_query(doc_info_query, tuple(product_ids + product_ids))
+        doc_info_results = SQLOperator().execute_query(doc_info_query, tuple(product_ids + product_ids))
         doc_info_map = {}
         for doc_info in doc_info_results:
             if doc_info_map.get(doc_info['iddetalhe']):
@@ -173,7 +133,7 @@ class SalesCalculator:
                 iddetalhe, dtreferencia ASC;
         """
         formated_ids = ','.join(['%s'] * len(product_ids))
-        sales_result = DatabaseHandler().execute_query(sales_query.format(formated_ids), product_ids)
+        sales_result = SQLOperator().execute_query(sales_query.format(formated_ids), product_ids)
         filtered_sales = {}
         for sale in sales_result:
             if not sale['iddetalhe'] in filtered_sales:
@@ -208,7 +168,7 @@ class PaymentFluxFetcher:
             WHERE iddocumento IN ({})
         """
         formated_ids = ','.join(['%s'] * len(document_ids))
-        payment_flux_result = DatabaseHandler().execute_query(payment_flux_query.format(formated_ids), document_ids)
+        payment_flux_result = SQLOperator().execute_query(payment_flux_query.format(formated_ids), document_ids)
         formated_flux = {}
         for flux in payment_flux_result:
             if not flux['iddocumento'] in formated_flux:
@@ -354,6 +314,7 @@ class SalesUpdate:
     @staticmethod
     def calculate_stock_min(high_avg: float, sales_quant: int, shipping_days: int, sales_days) -> int:
         try:
+            
             daily_avg = (sales_quant / sales_days) * 0.75
             possible_delay = 1.8
             quotation_period = 2
@@ -365,10 +326,11 @@ class SalesUpdate:
     @staticmethod
     def calculate_stock_max(stock_min: int, sales_quant: int, sales_days) -> int:
         try:
-            
+
             daily_avg = (sales_quant / sales_days) * 0.75
             stock_max = stock_min + daily_avg * 55
             return max(3, int(stock_max))
+
         except ZeroDivisionError:
             return 3
 

@@ -1,0 +1,47 @@
+[
+    {
+        "iddetalhe": "0103XIJ11E",
+        "cdprincipal": "013288",
+        "dsdetalhe": "CIMENTO MONTES CLAROS CPII 50KG  (MOC)",
+        "qtestoque": 579.0,
+        "last_sale": "09/07/2024",
+        "dura_mes": true,
+        "dtreferencia": "28/06/2024",
+        "sales": 31.0,
+        "shipping_days": 7,
+        "supplier": "COMERCIAL SOUZA DINIZ LTDA",
+        "stock_min": 172,
+        "sugestion": 0,
+        "stock_max": 288
+    },
+    {
+        "iddetalhe": "N5D000022F",
+        "cdprincipal": "001427",
+        "dsdetalhe": "CIMENTO NO KILO",
+        "qtestoque": 106.0,
+        "last_sale": "09/07/2024",
+        "dura_mes": false,
+        "dtreferencia": "13/06/2024",
+        "sales": 910.0,
+        "shipping_days": 7,
+        "supplier": "Empresa de Cimentos Liz S.A.",
+        "stock_min": 607,
+        "sugestion": 1944.0,
+        "stock_max": 2050
+    },
+    {
+        "iddetalhe": "01008H4YCR",
+        "cdprincipal": "007018",
+        "dsdetalhe": "CIMENTO NACIONAL 50KG",
+        "qtestoque": 398.0,
+        "last_sale": "09/07/2024",
+        "dura_mes": true,
+        "dtreferencia": "08/09/2022",
+        "sales": 242.0,
+        "shipping_days": 7,
+        "supplier": "COMPANHIA NACIONAL DE CIMENTO - CNC",
+        "stock_min": 225,
+        "sugestion": 0,
+        "stock_max": 239
+    }
+]

@@ -6,40 +6,46 @@ from openpyxl import Workbook, load_workbook
 from pathlib import Path
 from os import getenv
 import json
-from services.fetch_services import ProductFilter, StockUpdater, SalesUpdate
-from services.products_finder import ProductFinder
+from src.services.fetch_services import StockUpdater, SalesUpdate
+from src.services.products_finder import ProductFinder
+from src.services.product_services import ProductServices
+from src.database.sql_operator import SQLOperator
 
-# Load environment variables
 load_dotenv()
 report_path = Path(getenv('STATIC') + 'report.json')
 spreadsheet_path = Path(getenv('STATIC') + 'pedido.xlsx')
 
-# Initialize Flask app
+
 app = Flask(__name__)
 CORS(app)
 
-class IndexPage(MethodView):
+class HomePage(MethodView):
     def get(self):
         finder = ProductFinder()
-        suppliers = finder.fetch_all_suppliers()
-        groups = finder.fetch_all_prod_groups()
-        families = finder.fetch_all_prod_family()
+        suppliers = finder.find_all_suppliers()
+        groups = finder.find_all_prod_groups()
+        families = finder.find_all_prod_family()
         context = {'fornecedores': suppliers, 'groups': groups, 'families': families}
-        return render_template('index.html', **context)
+        return jsonify(context)
+        
 
 class ListaCompras(MethodView):
     def get(self):
         data = request.args.get('data', False)
-        if data:
+        if data:            
             parsed_data = json.loads(data)
-            filtered_products = ProductFilter.filter_by_family_n_groups(parsed_data)
-            supplier_products = ProductFilter.filter_by_suppliers(parsed_data)
+            sql_operator = SQLOperator()
+            product_services = ProductServices(sql_operator)
+            filtered_products = product_services.join_groups_n_family(parsed_data)
+            supplier_products = product_services.join_suppliers(parsed_data)
             all_products = filtered_products + supplier_products
             updated_products = StockUpdater.join_products_stock(all_products)
             result = SalesUpdate.join_product_sales(updated_products)
-        
+            
+           
             with open(report_path, 'w+') as file:
                 json.dump(result, file, indent=4)
+                
             return jsonify({'ok': True}), 200
         else:
             return jsonify({'ok': False}), 404
@@ -49,7 +55,9 @@ class Informacoes(MethodView):
         if report_path.exists():
             with open(report_path, 'r') as file:
                 result = json.load(file)
-            return render_template('prod_list.html', products=result)
+            PATH = ('prod_list.html')
+            input()
+            return render_template(PATH, products=result)
         else:
             response = {'message': 'O relatorio não foi gerado, tente novamente'}
             return jsonify(response)
@@ -110,7 +118,7 @@ class CarregarPlanilha(MethodView):
         return render_template('load_sheet.html')
 
 # Register the URLs with the classes
-app.add_url_rule('/', view_func=IndexPage.as_view('index_page'))
+app.add_url_rule('/', view_func=HomePage.as_view('index_page'))
 app.add_url_rule('/lista_compras', view_func=ListaCompras.as_view('lista_compras'))
 app.add_url_rule('/informacoes', view_func=Informacoes.as_view('informacoes'))
 app.add_url_rule('/create_spreadsheet', view_func=CreateSpreadsheet.as_view('create_spreadsheet'))
