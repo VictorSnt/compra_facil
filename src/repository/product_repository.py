@@ -3,30 +3,30 @@ from typing import List, Optional
 from sqlalchemy import or_
 from sqlalchemy.orm import Session
 from sqlalchemy.orm.query import Query
-from src.model.produto import Produto
-from src.model.produto_info import ProdutoInfo
+from src.model.product import Product
+from src.model.product_info import ProductInfo
 from src.model.docitem import Docitem
 from src.model.document import Document
-from src.model.produto import Produto
+from src.model.product import Product
 
 
-class ProdutoRepository:
+class ProductRepository:
     
     def __init__(
-        self, session: Session, model: Produto, 
-        model_2: ProdutoInfo    
+        self, session: Session, model: Product, 
+        model_2: ProductInfo    
     ) -> None:
         
         self.session: Session = session
-        self.model: Produto = model
-        self.model_2: ProdutoInfo = model_2
+        self.model: Product = model
+        self.model_2: ProductInfo = model_2
     
     def find_all(
         self,
         active_only: bool,
         familia_filter: Optional[List[str]] = None,
         grupo_filter: Optional[List[str]] = None 
-    ) -> List[Produto]:
+    ) -> List[Product]:
         
         query: Query = self.session.query(self.model)
         
@@ -49,7 +49,7 @@ class ProdutoRepository:
         if active_only:
             query = query.filter(self.model.stdetalheativo == True)
         
-        result: List[Produto] = query.all()
+        result: List[Product] = query.all()
         
         self.session.close()
         
@@ -57,11 +57,11 @@ class ProdutoRepository:
 
     def find_products_by_suppliers(
         self, fornecedor_ids: List[str]
-        ) -> List[Produto]:
+        ) -> List[Product]:
         
         query = (
             self.session.query(self.model)
-            .join(Docitem, Docitem.iddetalhe == Produto.iddetalhe)
+            .join(Docitem, Docitem.iddetalhe == Product.iddetalhe)
             .join(Document, Docitem.iddocumento == Document.iddocumento)
             .filter(Document.idpessoa.in_(fornecedor_ids))
             .all()

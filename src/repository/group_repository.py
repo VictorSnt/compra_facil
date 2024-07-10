@@ -1,20 +1,20 @@
 from typing import List
 from sqlalchemy.orm import Session
-from src.model.grupo import Grupo
+from src.model.group import Group
 
 
-class GrupoRepository:
+class GroupRepository:
     
-    def __init__(self, session: Session, model: Grupo) -> None:
+    def __init__(self, session: Session, model: Group) -> None:
         self.session: Session = session
-        self.model: Grupo = model
+        self.model: Group = model
     
-    def find_all(self) -> List[Grupo]:
+    def find_all(self) -> List[Group]:
         result = self.session.query(self.model).all()
         self.session.close()
         return result
     
-    def find_all_without_special_characters(self, ids) -> List[Grupo]:
+    def find_all_without_special_characters(self, ids) -> List[Group]:
         if ids:
             result = (
                 self.session.query(self.model)

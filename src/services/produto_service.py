@@ -2,15 +2,15 @@ from typing import List
 from fastapi import APIRouter
 
 from src.exceptions.err import NotFoundException
-from src.repository.produto_repository import ProdutoRepository
-from src.schemas.produto_schema import GetProduto
+from src.repository.product_repository import ProductRepository
+from src.schemas.product_schema import GetProduct
 
 router = APIRouter()
 
 
-class ProdutoService:
+class ProductService:
     
-    def __init__(self, repository: ProdutoRepository) -> None:
+    def __init__(self, repository: ProductRepository) -> None:
         self.repo = repository
     
     def find_all(self, only_active: bool, familia_filter: List[str]|None, grupo_filter: List[str]|None):
@@ -21,10 +21,10 @@ class ProdutoService:
             raise NotFoundException
         print('serc')
         return [
-            GetProduto(
-                iddetalhe=produto.iddetalhe, 
-                dsdetalhe=produto.dsdetalhe
-            ) for produto in response
+            GetProduct(
+                iddetalhe=product.iddetalhe, 
+                dsdetalhe=product.dsdetalhe
+            ) for product in response
         ]
 
     def find_all_suppliers_products(self, fornecedor_ids):
@@ -35,7 +35,7 @@ class ProdutoService:
             raise NotFoundException
         
         return [
-            GetProduto(iddetalhe=produto.iddetalhe, dsdetalhe=produto.dsdetalhe) 
-            for produto in response
+            GetProduct(iddetalhe=product.iddetalhe, dsdetalhe=product.dsdetalhe) 
+            for product in response
         ]
     

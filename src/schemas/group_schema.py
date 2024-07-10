@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
 
-class GetGrupo(BaseModel):
+class GetGroup(BaseModel):
     idgrupo: str
     nmgrupo: str

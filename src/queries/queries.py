@@ -2,7 +2,7 @@ get_families = """
 SELECT 
     idfamilia, dsfamilia 
 FROM 
-    wshop.familia 
+    wshop.family 
 WHERE 
     dsfamilia NOT LIKE '%@%'
 ORDER BY dsfamilia ASC
@@ -13,7 +13,7 @@ get_groups = """
 SELECT 
     idgrupo, nmgrupo 
 FROM 
-    wshop.grupo 
+    wshop.group 
 WHERE 
     nmgrupo NOT LIKE '%@%' 
 AND 
@@ -26,7 +26,7 @@ get_suppliers = """
 SELECT 
     idpessoa, nmpessoa 
 FROM 
-    wshop.Pessoa
+    wshop.Person
 WHERE 
     sttipopessoa = 'F'
 ORDER BY 

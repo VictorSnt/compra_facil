@@ -2,15 +2,15 @@ from typing import List
 from fastapi import APIRouter
 
 from src.exceptions.err import NotFoundException
-from src.repository.familia_repository import FamiliaRepository
-from src.schemas.familia_schema import GetFamilia
+from src.repository.family_repository import FamilyRepository
+from src.schemas.family_schema import GetFamily
 
 router = APIRouter()
 
 
-class FamiliaService:
+class FamilyService:
     
-    def __init__(self, repository: FamiliaRepository) -> None:
+    def __init__(self, repository: FamilyRepository) -> None:
         self.repo = repository
     
     def find_all(self):
@@ -21,8 +21,8 @@ class FamiliaService:
             raise NotFoundException
         
         return [
-            GetFamilia(idfamilia=familia.idfamilia, dsfamilia=familia.dsfamilia) 
-            for familia in response
+            GetFamily(idfamilia=family.idfamilia, dsfamilia=family.dsfamilia) 
+            for family in response
         ]
 
     def find_all_without_special_characters(self, ids):
@@ -33,8 +33,8 @@ class FamiliaService:
             raise NotFoundException
         
         return [
-            GetFamilia(idfamilia=familia.idfamilia, dsfamilia=familia.dsfamilia) 
-            for familia in response
+            GetFamily(idfamilia=family.idfamilia, dsfamilia=family.dsfamilia) 
+            for family in response
         ]
 
     def find_by_id(self, id: str):
@@ -45,6 +45,6 @@ class FamiliaService:
             raise NotFoundException
         
         return [
-            GetFamilia(idfamilia=familia.idfamilia, dsfamilia=familia.dsfamilia) 
-            for familia in response
+            GetFamily(idfamilia=family.idfamilia, dsfamilia=family.dsfamilia) 
+            for family in response
         ]

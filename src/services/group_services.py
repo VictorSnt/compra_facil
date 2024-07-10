@@ -1,15 +1,15 @@
 from fastapi import APIRouter
 
 from src.exceptions.err import NotFoundException
-from src.repository.grupo_repository import GrupoRepository
-from src.schemas.grupo_schema import GetGrupo
+from src.repository.group_repository import GroupRepository
+from src.schemas.group_schema import GetGroup
 
 router = APIRouter()
 
 
-class GrupoService:
+class GroupService:
     
-    def __init__(self, repository: GrupoRepository) -> None:
+    def __init__(self, repository: GroupRepository) -> None:
         self.repo = repository
     
     def find_all(self):
@@ -20,8 +20,8 @@ class GrupoService:
             raise NotFoundException
         
         return [
-            GetGrupo(idgrupo=grupo.idgrupo, nmgrupo=grupo.nmgrupo) 
-            for grupo in response
+            GetGroup(idgrupo=group.idgrupo, nmgrupo=group.nmgrupo) 
+            for group in response
         ]
 
     def find_all_without_special_characters(self, ids):
@@ -32,6 +32,6 @@ class GrupoService:
             raise NotFoundException
         
         return [
-            GetGrupo(idgrupo=grupo.idgrupo, nmgrupo=grupo.nmgrupo) 
-            for grupo in response
+            GetGroup(idgrupo=group.idgrupo, nmgrupo=group.nmgrupo) 
+            for group in response
         ]

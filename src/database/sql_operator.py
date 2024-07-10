@@ -46,7 +46,7 @@ class SQLOperator:
             where_ids = families_filter
 
         select_all = 'SELECT det.iddetalhe, det.cdprincipal, det.dsdetalhe from wshop.detalhe as det'
-        join = 'JOIN wshop.produto as prod on prod.idproduto = det.idproduto'
+        join = 'JOIN wshop.product as prod on prod.idproduto = det.idproduto'
         where = 'WHERE stdetalheativo = true AND'
 
         return f'{select_all} {join} {where} {where_ids}'

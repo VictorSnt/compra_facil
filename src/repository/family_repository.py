@@ -1,22 +1,22 @@
 from typing import List
 from sqlalchemy.orm import Session
-from src.model.familia import Familia
+from src.model.family import Family
 
 
-class FamiliaRepository:
+class FamilyRepository:
     
-    def __init__(self, session: Session, model: Familia) -> None:
+    def __init__(self, session: Session, model: Family) -> None:
         self.session: Session = session
-        self.model: Familia = model
+        self.model: Family = model
     
-    def find_all(self) -> List[Familia]:
-        result: List[Familia] = self.session.query(self.model).all()
+    def find_all(self) -> List[Family]:
+        result: List[Family] = self.session.query(self.model).all()
         self.session.close()
         return result
     
-    def find_all_without_special_characters(self, ids) -> List[Familia]:
+    def find_all_without_special_characters(self, ids) -> List[Family]:
         if ids:
-            result: List[Familia] = (
+            result: List[Family] = (
                 self.session.query(self.model)
                 .filter(
                     self.model.dsfamilia.notlike('%@%'), 
@@ -25,7 +25,7 @@ class FamiliaRepository:
                 .all()
             )
         else:
-            result: List[Familia] = (
+            result: List[Family] = (
                 self.session.query(self.model)
                 .filter(
                     self.model.dsfamilia.notlike('%@%')
@@ -37,7 +37,7 @@ class FamiliaRepository:
         return result
     
     def find_by_id(self, id: str):
-        result: List[Familia] = (
+        result: List[Family] = (
             self.session.query(self.model)
             .where(self.model.idfamilia == id )
             .all()

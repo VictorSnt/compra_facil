@@ -3,14 +3,14 @@ from sqlalchemy.orm import relationship
 from src.model.base import Base
 
 
-class ProdutoInfo(Base):
+class ProductInfo(Base):
     __tablename__ = 'produto'
     __table_args__ = {'schema': 'wshop'}
     idproduto = Column(String, primary_key=True)
     idgrupo = Column(String, ForeignKey('wshop.grupo.idgrupo'))
     nmproduto = Column(String)
-    grupo = relationship("Grupo", back_populates="produtos", primaryjoin="Grupo.idgrupo == ProdutoInfo.idgrupo")
-    produto = relationship("Produto", back_populates="produto_info", uselist=False, primaryjoin="ProdutoInfo.idproduto == Produto.idproduto")
+    group = relationship("Group", back_populates="products", primaryjoin="Group.idgrupo == ProductInfo.idgrupo")
+    product = relationship("Product", back_populates="product_info", uselist=False, primaryjoin="ProductInfo.idproduto == Product.idproduto")
 
     def __repr__(self):
-        return f"<Produto_info(id={self.idproduto} ds={self.nmproduto})>"
+        return f"<Product_info(id={self.idproduto} ds={self.nmproduto})>"

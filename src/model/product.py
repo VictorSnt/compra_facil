@@ -2,7 +2,7 @@ from sqlalchemy import Boolean, Column, ForeignKey, String
 from sqlalchemy.orm import relationship
 from src.model.base import Base
 
-class Produto(Base):
+class Product(Base):
     __tablename__ = 'detalhe'
     __table_args__ = {'schema': 'wshop'}
     iddetalhe = Column(String, primary_key=True)
@@ -10,9 +10,9 @@ class Produto(Base):
     idfamilia = Column(String, ForeignKey('wshop.familia.idfamilia'))
     dsdetalhe = Column(String)
     stdetalheativo = Column(Boolean)
-    familia = relationship("Familia", back_populates="produtos", primaryjoin="Produto.idfamilia == Familia.idfamilia")
-    produto_info = relationship("ProdutoInfo", back_populates="produto", uselist=False, primaryjoin="Produto.idproduto == ProdutoInfo.idproduto")
-    docitems = relationship("Docitem", back_populates="produtos")
+    family = relationship("Family", back_populates="products", primaryjoin="Product.idfamilia == Family.idfamilia")
+    product_info = relationship("ProductInfo", back_populates="product", uselist=False, primaryjoin="Product.idproduto == ProductInfo.idproduto")
+    docitems = relationship("Docitem", back_populates="products")
     
     def __repr__(self):
-        return f"<Produto(id={self.iddetalhe} ds={self.dsdetalhe})>"
+        return f"<Product(id={self.iddetalhe} ds={self.dsdetalhe})>"

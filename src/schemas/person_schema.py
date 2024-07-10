@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
 
-class GetPessoa(BaseModel):
+class GetPerson(BaseModel):
     idpessoa: str
     nmpessoa: str

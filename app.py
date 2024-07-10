@@ -1,18 +1,18 @@
 
 from fastapi import FastAPI
-from src.controllers.familia_controller import FamiliaController
-from src.controllers.grupo_controller import GrupoController
-from src.controllers.pessoa_controller import PessoaController
-from src.controllers.produto_controller import ProdutoController
+from src.controllers.family_controller import FamilyController
+from src.controllers.group_controller import GroupController
+from src.controllers.person_controller import PersonController
+from src.controllers.product_controller import ProductController
 from src.model.models import *
 
 
 app = FastAPI()
 
-app.include_router(FamiliaController.get_router())
-app.include_router(GrupoController.get_router())
-app.include_router(PessoaController.get_router())
-app.include_router(ProdutoController.get_router())
+app.include_router(FamilyController.get_router())
+app.include_router(GroupController.get_router())
+app.include_router(PersonController.get_router())
+app.include_router(ProductController.get_router())
 
 
 # @app.get("/informacoes")

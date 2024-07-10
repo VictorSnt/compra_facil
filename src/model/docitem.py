@@ -10,7 +10,7 @@ class Docitem(Base):
     iddocumento = Column(String, ForeignKey('wshop.documen.iddocumento'))
     dtreferencia = Column(Date) 
     documento = relationship("Document", back_populates="docitems")
-    produtos = relationship("Produto", back_populates="docitems")
+    products = relationship("Product", back_populates="docitems")
     
     def __repr__(self):
         return (

@@ -74,7 +74,7 @@ FROM
 JOIN
     wshop.docitem AS docitem ON docitem.iddocumento = doc.iddocumento
 JOIN
-    wshop.Pessoa AS pes ON pes.idpessoa = doc.idpessoa
+    wshop.Person AS pes ON pes.idpessoa = doc.idpessoa
 WHERE
     docitem.iddetalhe IN ({})
     AND doc.tpoperacao = 'C'

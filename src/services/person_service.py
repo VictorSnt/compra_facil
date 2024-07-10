@@ -1,16 +1,16 @@
 from fastapi import APIRouter
 
-from src.repository.pessoa_repository import PessoaRepository
+from src.repository.person_repository import PersonRepository
 from src.exceptions.err import NotFoundException
-from src.schemas.pessoa_schema import GetPessoa
+from src.schemas.person_schema import GetPerson
 
 
 router = APIRouter()
 
 
-class PessoaService:
+class PersonService:
     
-    def __init__(self, repository: PessoaRepository) -> None:
+    def __init__(self, repository: PersonRepository) -> None:
         self.repo = repository
     
     def find_all(self):
@@ -21,8 +21,8 @@ class PessoaService:
             raise NotFoundException
         
         return [
-            GetPessoa(idpessoa=pessoa.idpessoa, nmpessoa=pessoa.nmpessoa) 
-            for pessoa in response
+            GetPerson(idpessoa=person.idpessoa, nmpessoa=person.nmpessoa) 
+            for person in response if person
         ]
 
     def find_all_suppliers(self):
@@ -33,6 +33,6 @@ class PessoaService:
             raise NotFoundException
         
         return [
-            GetPessoa(idpessoa=pessoa.idpessoa, nmpessoa=pessoa.nmpessoa) 
-            for pessoa in response
+            GetPerson(idpessoa=person.idpessoa, nmpessoa=person.nmpessoa) 
+            for person in response
         ]

@@ -1,17 +1,18 @@
 from fastapi.params import Depends
 from sqlalchemy.orm import Session
 
+
 from src.database.db_session_maker import Session_Maker
-from src.model.pessoa import Pessoa
-from src.repository.pessoa_repository import PessoaRepository
-from src.services.pessoa_service import PessoaService
+from src.model.group import Group
+from src.repository.group_repository import GroupRepository
+from src.services.group_services import GroupService
 
 
-class PessoaServiceFactory:
+class GroupServiceFactory:
     
     @classmethod
     def build_default_Service(
         cls, session: Session = Depends(Session_Maker.create_session)):
         
-        repo = PessoaRepository(session, Pessoa)
-        return PessoaService(repo)
+        repo = GroupRepository(session, Group)
+        return GroupService(repo)
