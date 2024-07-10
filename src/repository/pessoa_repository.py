@@ -22,4 +22,5 @@ class PessoaRepository:
             .all()
         )
         self.session.close()
-        return result
+        return result 
+    

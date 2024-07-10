@@ -27,4 +27,15 @@ class ProdutoService:
             ) for produto in response
         ]
 
+    def find_all_suppliers_products(self, fornecedor_ids):
+        
+        response = self.repo.find_products_by_suppliers(fornecedor_ids)
+        
+        if not response:
+            raise NotFoundException
+        
+        return [
+            GetProduto(iddetalhe=produto.iddetalhe, dsdetalhe=produto.dsdetalhe) 
+            for produto in response
+        ]
     

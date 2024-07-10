@@ -1,10 +1,9 @@
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter
 
-from src.exceptions.err import NotFoundException
 from src.repository.pessoa_repository import PessoaRepository
-from src.database.db_session_maker import Session_Maker
-from src.model.pessoa import Pessoa
+from src.exceptions.err import NotFoundException
 from src.schemas.pessoa_schema import GetPessoa
+
 
 router = APIRouter()
 

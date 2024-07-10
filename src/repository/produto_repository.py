@@ -5,6 +5,9 @@ from sqlalchemy.orm import Session
 from sqlalchemy.orm.query import Query
 from src.model.produto import Produto
 from src.model.produto_info import ProdutoInfo
+from src.model.docitem import Docitem
+from src.model.document import Document
+from src.model.produto import Produto
 
 
 class ProdutoRepository:
@@ -51,3 +54,18 @@ class ProdutoRepository:
         self.session.close()
         
         return result
+
+    def find_products_by_suppliers(
+        self, fornecedor_ids: List[str]
+        ) -> List[Produto]:
+        
+        query = (
+            self.session.query(self.model)
+            .join(Docitem, Docitem.iddetalhe == Produto.iddetalhe)
+            .join(Document, Docitem.iddocumento == Document.iddocumento)
+            .filter(Document.idpessoa.in_(fornecedor_ids))
+            .all()
+        )
+        
+        self.session.close()
+        return query 
