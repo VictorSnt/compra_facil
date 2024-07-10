@@ -9,4 +9,11 @@ class Pessoa(Base):
     idpessoa = Column(String, primary_key=True)
     nmpessoa = Column(String)
     sttipopessoa = Column(String)
-    documentos = relationship("Document", back_populates="pessoa", primaryjoin="Pessoa.idpessoa == Document.idpessoa")
+    documentos = relationship(
+        "Document", back_populates="pessoa", 
+        primaryjoin="Pessoa.idpessoa == Document.idpessoa"
+    )
+    
+    def __repr__(self):
+        return f"<Pessoa(id={self.idpessoa} ds={self.nmpessoa})>"
+    

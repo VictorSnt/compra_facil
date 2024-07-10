@@ -10,17 +10,36 @@ class FamiliaRepository:
         self.model: Familia = model
     
     def find_all(self) -> List[Familia]:
-        result = self.session.query(self.model).all()
+        result: List[Familia] = self.session.query(self.model).all()
         self.session.close()
         return result
     
-    def find_all_without_special_characters(self) -> List[Familia]:
-        result = (
-            self.session.query(Familia.idfamilia, Familia.dsfamilia)
-            .filter(
-                Familia.dsfamilia.notlike('%@%')
+    def find_all_without_special_characters(self, ids) -> List[Familia]:
+        if ids:
+            result: List[Familia] = (
+                self.session.query(self.model)
+                .filter(
+                    self.model.dsfamilia.notlike('%@%'), 
+                    self.model.idfamilia.in_(ids)
+                ).order_by(self.model.dsfamilia.asc())
+                .all()
             )
-            .order_by(Familia.dsfamilia.asc())
+        else:
+            result: List[Familia] = (
+                self.session.query(self.model)
+                .filter(
+                    self.model.dsfamilia.notlike('%@%')
+                ).order_by(self.model.dsfamilia.asc())
+                .all()
+            )
+        
+        self.session.close()
+        return result
+    
+    def find_by_id(self, id: str):
+        result: List[Familia] = (
+            self.session.query(self.model)
+            .where(self.model.idfamilia == id )
             .all()
         )
         self.session.close()

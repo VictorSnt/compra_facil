@@ -12,7 +12,7 @@ class FamiliaServiceFactory:
     
     @classmethod
     def build_default_Service(
-        cls, session: Session = Depends(Session_Maker.create_session)
-    ):
+        cls, session: Session = Depends(Session_Maker.create_session)):
+        
         repo = FamiliaRepository(session, Familia)
         return FamiliaService(repo)

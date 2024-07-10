@@ -1,5 +1,5 @@
 from typing import List
-from fastapi import APIRouter
+from fastapi import APIRouter, Query
 from fastapi.params import Depends
 
 from src.factory.grupo_service_factory import GrupoServiceFactory
@@ -18,9 +18,12 @@ class GrupoController:
         return service.find_all()
 
     @router.get('/sem_@', response_model=List[GetGrupo])
-    def get_without_special_characters(service: GrupoService = Depends(GrupoServiceFactory.build_default_Service)):
+    def get_without_special_characters(
+        service: GrupoService = Depends(
+        GrupoServiceFactory.build_default_Service),
+        ids: List[str] = Query(None)):
         
-        return service.find_all_without_special_characters()
+        return service.find_all_without_special_characters(ids)
 
     @classmethod
     def get_router(cls):

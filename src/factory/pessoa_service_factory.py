@@ -11,7 +11,7 @@ class PessoaServiceFactory:
     
     @classmethod
     def build_default_Service(
-        cls, session: Session = Depends(Session_Maker.create_session)
-    ):
+        cls, session: Session = Depends(Session_Maker.create_session)):
+        
         repo = PessoaRepository(session, Pessoa)
         return PessoaService(repo)

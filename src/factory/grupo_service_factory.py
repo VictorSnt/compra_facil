@@ -12,7 +12,7 @@ class GrupoServiceFactory:
     
     @classmethod
     def build_default_Service(
-        cls, session: Session = Depends(Session_Maker.create_session)
-    ):
+        cls, session: Session = Depends(Session_Maker.create_session)):
+        
         repo = GrupoRepository(session, Grupo)
         return GrupoService(repo)

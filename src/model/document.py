@@ -12,3 +12,9 @@ class Document(Base):
     tpoperacao = Column(String)
     pessoa = relationship("Pessoa", back_populates="documentos")
     docitems = relationship("Docitem", back_populates="documento")
+    
+    def __repr__(self):
+        return (
+            f"<Document(id={self.iddocumento} "
+            f"data={self.dtreferencia} tpoperacao={self.tpoperacao})>"
+        )

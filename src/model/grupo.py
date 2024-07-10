@@ -9,3 +9,6 @@ class Grupo(Base):
     idgrupo = Column(String, primary_key=True)
     nmgrupo = Column(String)
     produtos = relationship("ProdutoInfo", back_populates="grupo", primaryjoin="ProdutoInfo.idgrupo == Grupo.idgrupo")
+
+    def __repr__(self):
+        return f"<Grupo(id={self.idgrupo} ds={self.nmgrupo})>"

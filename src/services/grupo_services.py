@@ -24,9 +24,9 @@ class GrupoService:
             for grupo in response
         ]
 
-    def find_all_without_special_characters(self):
+    def find_all_without_special_characters(self, ids):
         
-        response = self.repo.find_all_without_special_characters()
+        response = self.repo.find_all_without_special_characters(ids)
         
         if not response:
             raise NotFoundException

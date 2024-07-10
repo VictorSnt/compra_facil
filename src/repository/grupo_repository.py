@@ -14,15 +14,30 @@ class GrupoRepository:
         self.session.close()
         return result
     
-    def find_all_without_special_characters(self) -> List[Grupo]:
-        result = (
-            self.session.query(Grupo.idgrupo, Grupo.nmgrupo)
-            .filter(
-                Grupo.nmgrupo.notlike('%@%'),
-                Grupo.nmgrupo.notlike('%*%')
+    def find_all_without_special_characters(self, ids) -> List[Grupo]:
+        if ids:
+            result = (
+                self.session.query(self.model)
+                .filter(
+                    self.model.nmgrupo.notlike('%@%'),
+                    self.model.nmgrupo.notlike('%*%'),
+                    self.model.idgrupo.in_(ids)
+                    
+                )
+                .order_by(self.model.nmgrupo.asc())
+                .all()
             )
-            .order_by(Grupo.nmgrupo.asc())
-            .all()
-        )
-        self.session.close()
+            self.session.close()
+            
+        else:
+            result = (
+                self.session.query(self.model)
+                .filter(
+                    self.model.nmgrupo.notlike('%@%'),
+                    self.model.nmgrupo.notlike('%*%')
+                )
+                .order_by(self.model.nmgrupo.asc())
+                .all()
+            )
+            
         return result

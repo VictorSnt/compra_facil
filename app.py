@@ -3,6 +3,7 @@ from fastapi import FastAPI
 from src.controllers.familia_controller import FamiliaController
 from src.controllers.grupo_controller import GrupoController
 from src.controllers.pessoa_controller import PessoaController
+from src.controllers.produto_controller import ProdutoController
 from src.model.models import *
 
 
@@ -11,6 +12,7 @@ app = FastAPI()
 app.include_router(FamiliaController.get_router())
 app.include_router(GrupoController.get_router())
 app.include_router(PessoaController.get_router())
+app.include_router(ProdutoController.get_router())
 
 
 # @app.get("/informacoes")
