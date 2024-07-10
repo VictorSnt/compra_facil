@@ -14,12 +14,14 @@ class ProdutoController:
     
     @router.get('/', response_model=List[GetProduto])
     def get_produtos(
-        service: ProdutoService = Depends(
-            ProdutoServiceFactory.build_default_Service),
-        only_active: bool = Query(True)):
+        service: ProdutoService = Depends(ProdutoServiceFactory.build_default_Service),
+        only_active: bool = Query(True),
+        familia_filter: List[str] = Query(None),
+        grupo_filter: List[str] = Query(None)):
         
-        return service.find_all(only_active)
-
+        return service.find_all(only_active, familia_filter, grupo_filter)
+    
+    
     
     @classmethod
     def get_router(cls):

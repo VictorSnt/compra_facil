@@ -1,3 +1,4 @@
+from typing import List
 from fastapi import APIRouter
 
 from src.exceptions.err import NotFoundException
@@ -12,9 +13,9 @@ class ProdutoService:
     def __init__(self, repository: ProdutoRepository) -> None:
         self.repo = repository
     
-    def find_all(self, only_active: bool):
+    def find_all(self, only_active: bool, familia_filter: List[str]|None, grupo_filter: List[str]|None):
         
-        response = self.repo.find_all(only_active)
+        response = self.repo.find_all(only_active, familia_filter, grupo_filter)
         
         if not response:
             raise NotFoundException

@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 
 from src.database.db_session_maker import Session_Maker
 from src.model.produto import Produto
+from src.model.produto_info import ProdutoInfo
 from src.repository.produto_repository import ProdutoRepository
 from src.services.produto_service import ProdutoService
 
@@ -13,5 +14,5 @@ class ProdutoServiceFactory:
     def build_default_Service(
         cls, session: Session = Depends(Session_Maker.create_session)):
         
-        repo = ProdutoRepository(session, Produto)
+        repo = ProdutoRepository(session, Produto, ProdutoInfo)
         return ProdutoService(repo)

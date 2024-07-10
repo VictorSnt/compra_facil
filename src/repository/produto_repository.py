@@ -1,27 +1,53 @@
 from re import S
-from typing import List
+from typing import List, Optional
+from sqlalchemy import or_
 from sqlalchemy.orm import Session
-from sqlalchemy.orm import joinedload
-from src.model.docitem import Docitem
-from src.model.document import Document
+from sqlalchemy.orm.query import Query
 from src.model.produto import Produto
+from src.model.produto_info import ProdutoInfo
 
 
 class ProdutoRepository:
     
-    def __init__(self, session: Session, model: Produto) -> None:
+    def __init__(
+        self, session: Session, model: Produto, 
+        model_2: ProdutoInfo    
+    ) -> None:
+        
         self.session: Session = session
         self.model: Produto = model
+        self.model_2: ProdutoInfo = model_2
     
-    def find_all(self, active_only: bool) -> List[Produto]:
+    def find_all(
+        self,
+        active_only: bool,
+        familia_filter: Optional[List[str]] = None,
+        grupo_filter: Optional[List[str]] = None 
+    ) -> List[Produto]:
+        
+        query: Query = self.session.query(self.model)
+        
+        
+        conditions = []
+
+        if grupo_filter:
+            query = query.join(
+                self.model_2, 
+                self.model_2.idproduto == self.model.idproduto
+            )
+            conditions.append(self.model_2.idgrupo.in_(grupo_filter))
+        
+        if familia_filter:
+            conditions.append(self.model.idfamilia.in_(familia_filter))
+        
+        if conditions:
+            query = query.filter(or_(*conditions))
+        
         if active_only:
-            result = (
-                self.session.query(self.model)
-                .filter(self.model.stdetalheativo == True)
-                .all()
-            ) 
-        else:
-            result: List[Produto] = self.session.query(self.model).all()
+            query = query.filter(self.model.stdetalheativo == True)
+        
+        result: List[Produto] = query.all()
         
         self.session.close()
+        
         return result
