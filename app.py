@@ -15,6 +15,23 @@ app.include_router(PersonController.get_router())
 app.include_router(ProductController.get_router())
 
 
+# @app.route("/lista_compras")
+# def list_compras():
+#     data = request.args.get('data', False)
+#     if data:
+#         parsed_data = json.loads(data)
+#         filtered_products = ProductFilter.filter_by_family_n_groups(parsed_data)
+#         supplier_products = ProductFilter.filter_by_suppliers(parsed_data)
+#         all_products = filtered_products + supplier_products
+#         updated_products = StockUpdater.join_products_stock(all_products)
+#         result = SalesUpdate.join_product_sales(updated_products)
+    
+#         with open(report_path, 'w+') as file:
+#             json.dump(result, file, indent=4)
+#         return jsonify({'ok': True}), 200
+#     else:
+#         return jsonify({'ok': False}), 404
+
 # @app.get("/informacoes")
 # async def informacoes():
 #     if report_path.exists():

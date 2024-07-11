@@ -39,3 +39,14 @@ class ProductService:
             for product in response
         ]
     
+    def find_products_with_current_stock(self, product_ids):
+        
+        response = self.repo.find_products_with_current_stock(product_ids)
+        
+        if not response:
+            raise NotFoundException
+        
+        return [
+            GetProduct(iddetalhe=product.iddetalhe, dsdetalhe=product.dsdetalhe) 
+            for product in response
+        ]

@@ -5,3 +5,4 @@ from src.model.person import Person
 from src.model.product_info import ProductInfo
 from src.model.product import Product
 from src.model.document import Document
+from src.model.stock import Stock

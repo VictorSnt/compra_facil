@@ -50,7 +50,6 @@ class ProductRepository:
             query = query.filter(self.model.stdetalheativo == True)
         
         result: List[Product] = query.all()
-        
         self.session.close()
         
         return result
@@ -69,3 +68,20 @@ class ProductRepository:
         
         self.session.close()
         return query 
+    
+    
+    def find_products_with_current_stock(
+        self, product_ids
+        ) -> List[Product]:
+        
+        result: List[Product] = (
+            self.session.query(self.model)
+            .filter(self.model.iddetalhe.in_(product_ids))
+            .all()
+        )
+        
+        for product in result:
+            input(product.latest_stock)
+            # product.stock = sorted(product.stocks, key=lambda x: x.dtreferencia, reverse=True)
+            
+        

@@ -34,6 +34,17 @@ class ProductController:
         
         return service.find_all_suppliers_products(fornecedor_ids)
     
+    @router.get('/current_stock', response_model=List[GetProduct])
+    def get_current_stock(
+        service: ProductService = Depends(
+            ProductServiceFactory.build_default_Service
+        ),
+        product_ids: List[str] = Query() 
+        ):
+
+        return service.find_products_with_current_stock(product_ids)
+        
+    
     @classmethod
     def get_router(cls):
         return cls.router
