@@ -80,8 +80,5 @@ class ProductRepository:
             .all()
         )
         
-        for product in result:
-            input(product.latest_stock)
-            # product.stock = sorted(product.stocks, key=lambda x: x.dtreferencia, reverse=True)
-            
+        return result
         

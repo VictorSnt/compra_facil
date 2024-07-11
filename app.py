@@ -4,6 +4,7 @@ from src.controllers.family_controller import FamilyController
 from src.controllers.group_controller import GroupController
 from src.controllers.person_controller import PersonController
 from src.controllers.product_controller import ProductController
+from src.controllers.report_controller import ReportController
 from src.model.models import *
 
 
@@ -13,6 +14,7 @@ app.include_router(FamilyController.get_router())
 app.include_router(GroupController.get_router())
 app.include_router(PersonController.get_router())
 app.include_router(ProductController.get_router())
+app.include_router(ReportController.get_router())
 
 
 # @app.route("/lista_compras")

@@ -3,7 +3,7 @@ from fastapi import APIRouter
 from fastapi.params import Depends, Query
 
 from src.factory.product_service_factory import ProductServiceFactory
-from src.schemas.product_schema import GetProduct
+from src.schemas.product_schema import GetProduct, GetProductWithStock
 from src.services.produto_service import ProductService
 
 
@@ -34,12 +34,12 @@ class ProductController:
         
         return service.find_all_suppliers_products(fornecedor_ids)
     
-    @router.get('/current_stock', response_model=List[GetProduct])
+    @router.get('/current_stock', response_model=List[GetProductWithStock])
     def get_current_stock(
         service: ProductService = Depends(
             ProductServiceFactory.build_default_Service
         ),
-        product_ids: List[str] = Query() 
+        product_ids: List[str] = Query(None) 
         ):
 
         return service.find_products_with_current_stock(product_ids)

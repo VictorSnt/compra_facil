@@ -3,7 +3,7 @@ from fastapi import APIRouter
 
 from src.exceptions.err import NotFoundException
 from src.repository.product_repository import ProductRepository
-from src.schemas.product_schema import GetProduct
+from src.schemas.product_schema import GetProduct, GetProductWithStock
 
 router = APIRouter()
 
@@ -47,6 +47,11 @@ class ProductService:
             raise NotFoundException
         
         return [
-            GetProduct(iddetalhe=product.iddetalhe, dsdetalhe=product.dsdetalhe) 
+            GetProductWithStock(
+                iddetalhe=product.iddetalhe, 
+                dsdetalhe=product.dsdetalhe,
+                cdprincipal=product.cdprincipal,
+                stock=product.latest_stock.qtestoque
+            ) 
             for product in response
         ]
