@@ -1,14 +1,27 @@
-
+#ext
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI
+#app
 from src.controllers.family_controller import FamilyController
 from src.controllers.group_controller import GroupController
 from src.controllers.person_controller import PersonController
 from src.controllers.product_controller import ProductController
 from src.controllers.report_controller import ReportController
-from src.model.models import *
+from src.model.models import (
+    Product, Person, Docitem,
+    Document, Family, Group,
+    ProductInfo, Stock
+)
 
 
 app = FastAPI()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 app.include_router(FamilyController.get_router())
 app.include_router(GroupController.get_router())

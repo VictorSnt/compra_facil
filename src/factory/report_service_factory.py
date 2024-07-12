@@ -6,14 +6,14 @@ from src.database.db_session_maker import Session_Maker
 from src.model.product import Product
 from src.model.product_info import ProductInfo
 from src.repository.product_repository import ProductRepository
-from src.services.produto_service import ProductService
+from src.services.report_service import ReportService
 
 
-class ProductServiceFactory:
+class ReportServiceFactory:
 
     @classmethod
     def build_default_service(
         cls, session: Session = Depends(Session_Maker.create_session)):
 
         repo = ProductRepository(session, Product, ProductInfo)
-        return ProductService(repo)
+        return ReportService(repo)
