@@ -39,7 +39,8 @@ class Product(Base):
         primaryjoin="and_(Product.iddetalhe == Stock.iddetalhe,"
         "Stock.dtreferencia == (select(func.max(Stock.dtreferencia))"
         ".where(Stock.iddetalhe == Product.iddetalhe)))",
-        uselist=False
+        uselist=False,
+        overlaps="stocks,product"
     )
 
     def last_relevant_purchase(self, session: Session) -> datetime:

@@ -11,7 +11,7 @@
         "shipping_days": 7,
         "supplier": "COMERCIAL SOUZA DINIZ LTDA",
         "stock_min": 172,
-        "sugestion": 0,
+        "suggestion": 0,
         "stock_max": 288
     },
     {
@@ -26,7 +26,7 @@
         "shipping_days": 7,
         "supplier": "Empresa de Cimentos Liz S.A.",
         "stock_min": 607,
-        "sugestion": 1944.0,
+        "suggestion": 1944.0,
         "stock_max": 2050
     },
     {
@@ -41,7 +41,7 @@
         "shipping_days": 7,
         "supplier": "COMPANHIA NACIONAL DE CIMENTO - CNC",
         "stock_min": 225,
-        "sugestion": 0,
+        "suggestion": 0,
         "stock_max": 239
     }
 ]

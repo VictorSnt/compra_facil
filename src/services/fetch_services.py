@@ -260,27 +260,27 @@ class SalesUpdate:
             'shipping_days': shipping_days,
             'supplier': nmfornecedor,
             'stock_min': SalesUpdate.calculate_stock_min(high_avg, sales_quant, shipping_days, sales_days),
-            'sugestion': SalesUpdate.calculate_sugestion(sales_quant, prod['dura_mes'], shipping_days, sales_days)
+            'suggestion': SalesUpdate.calculate_suggestion(sales_quant, prod['dura_mes'], shipping_days, sales_days)
         })
         prod['stock_max'] = SalesUpdate.calculate_stock_max(prod['stock_min'], sales_quant, sales_days)
-        prod['sugestion'] = floor(prod['sugestion'])
+        prod['suggestion'] = floor(prod['suggestion'])
         
         if prod['qtestoque'] < prod['stock_min']:
-            prod['sugestion'] = prod['stock_max'] - prod['qtestoque']
+            prod['suggestion'] = prod['stock_max'] - prod['qtestoque']
 
         if prod['qtestoque'] >= prod['stock_max']:
-            prod['sugestion'] = 0
+            prod['suggestion'] = 0
         
         if sales_quant and sales_days > 0:
-            prod['dura_mes'] = (prod['qtestoque'] > prod['sugestion'])
+            prod['dura_mes'] = (prod['qtestoque'] > prod['suggestion'])
 
-        prod['sugestion'] -= product_order
+        prod['suggestion'] -= product_order
 
-        if prod['qtestoque'] + prod['sugestion']  >= prod['stock_max']:
-            prod['sugestion'] = prod['stock_max'] - prod['qtestoque']
+        if prod['qtestoque'] + prod['suggestion']  >= prod['stock_max']:
+            prod['suggestion'] = prod['stock_max'] - prod['qtestoque']
         
-        prod['dura_mes'] = True if prod['sugestion'] <= 0 else False
-        prod['sugestion'] = 0 if prod['sugestion'] < 0 else prod['sugestion']
+        prod['dura_mes'] = True if prod['suggestion'] <= 0 else False
+        prod['suggestion'] = 0 if prod['suggestion'] < 0 else prod['suggestion']
         return prod
 
     @staticmethod
@@ -305,7 +305,7 @@ class SalesUpdate:
         return 'N/A'
 
     @staticmethod
-    def calculate_sugestion(sales_quant: int, dura_mes: bool, shipping_days, sales_days) -> float:
+    def calculate_suggestion(sales_quant: int, dura_mes: bool, shipping_days, sales_days) -> float:
         if dura_mes:
             return 0 
         daily_avg = (sales_quant / sales_days) * 0.75

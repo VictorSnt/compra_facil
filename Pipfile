@@ -9,6 +9,7 @@ sqlalchemy = "*"
 fastapi = "*"
 uvicorn = "*"
 openpyxl = "*"
+redis = "*"
 
 [dev-packages]
 
