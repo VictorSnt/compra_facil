@@ -20,7 +20,7 @@ class GroupService:
             raise NotFoundException
         
         return [
-            GetGroup(idgrupo=group.idgrupo, nmgrupo=group.nmgrupo) 
+            GetGroup(id=group.idgrupo, name=group.nmgrupo) 
             for group in response
         ]
 
@@ -32,6 +32,6 @@ class GroupService:
             raise NotFoundException
         
         return [
-            GetGroup(idgrupo=group.idgrupo, nmgrupo=group.nmgrupo) 
+            GetGroup(id=group.idgrupo, name=group.nmgrupo) 
             for group in response
         ]

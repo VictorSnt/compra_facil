@@ -49,6 +49,19 @@ class ReportController:
         return service.generate_quote()
     
     
+    @staticmethod
+    @router.get(
+        '/similar_product_sugestion', 
+        response_model=List[PurchaseSuggestionSchema])
+    def find_similar_products(
+        service: ReportService = Depends(
+            ReportServiceFactory.build_default_service),
+        description: str = Query(),
+        idfamilia:str = Query()
+        ):
+        
+        return service.find_similar_products(description, idfamilia)
+    
     @classmethod
     def get_router(cls):
         return cls.router

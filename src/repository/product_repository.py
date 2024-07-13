@@ -81,4 +81,19 @@ class ProductRepository:
         )
         
         return result
-        
+    
+    def find_active_products(self) -> List[Product]:
+        return (
+            self.session.query(Product)
+            .filter(Product.stdetalheativo == True)
+            .all()
+        )
+
+    def find_similar_products(self, description: str, idfamilia: str):
+        return (
+            self.session.query(self.model)
+            .filter(
+                self.model.dsdetalhe.like(f'{description}%'),
+                self.model.idfamilia == idfamilia
+            ).all()
+        )

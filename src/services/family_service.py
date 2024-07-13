@@ -21,7 +21,7 @@ class FamilyService:
             raise NotFoundException
         
         return [
-            GetFamily(idfamilia=family.idfamilia, dsfamilia=family.dsfamilia) 
+            GetFamily(id=family.idfamilia, name=family.dsfamilia) 
             for family in response
         ]
 
@@ -33,7 +33,7 @@ class FamilyService:
             raise NotFoundException
         
         return [
-            GetFamily(idfamilia=family.idfamilia, dsfamilia=family.dsfamilia) 
+            GetFamily(id=family.idfamilia, name=family.dsfamilia) 
             for family in response
         ]
 
@@ -45,6 +45,6 @@ class FamilyService:
             raise NotFoundException
         
         return [
-            GetFamily(idfamilia=family.idfamilia, dsfamilia=family.dsfamilia) 
+            GetFamily(id=family.idfamilia, name=family.dsfamilia) 
             for family in response
         ]

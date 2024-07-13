@@ -21,7 +21,7 @@ class PersonService:
             raise NotFoundException
         
         return [
-            GetPerson(idpessoa=person.idpessoa, nmpessoa=person.nmpessoa) 
+            GetPerson(id=person.idpessoa, name=person.nmpessoa) 
             for person in response if person
         ]
 
@@ -33,6 +33,6 @@ class PersonService:
             raise NotFoundException
         
         return [
-            GetPerson(idpessoa=person.idpessoa, nmpessoa=person.nmpessoa) 
+            GetPerson(id=person.idpessoa, name=person.nmpessoa) 
             for person in response
         ]

@@ -1,6 +1,7 @@
 from datetime import datetime
 import json
 from typing import List
+from src.exceptions.err import NotFoundException
 from src.schemas.purchase_suggestion_schema import PurchaseSuggestionSchema
 from src.calculators.purchase_suggestion_calc import PurchaseSuggestionCalc
 from src.database.redis_cache_maker import RedisConnection
@@ -28,7 +29,7 @@ class ReportService:
             return []
 
     def cache_suggestions(self, repositions_days: int) -> List[PurchaseSuggestionSchema]:
-        products = self._get_active_products()
+        products = self.repo.find_active_products()
         suggestions = []
 
         try:
@@ -58,7 +59,7 @@ class ReportService:
         return suggestions
 
     def generate_quote(self):
-        product_ids = [prod.iddetalhe for prod in self._get_active_products()]
+        product_ids = [prod.iddetalhe for prod in self.repo.find_active_products()]
         current_suggestions = self.shopping_suggestion(product_ids)
         quote = [suggestion for suggestion in current_suggestions
             if suggestion.dias_suprimento <= 30]
@@ -66,12 +67,17 @@ class ReportService:
             sugg.dtreferencia, '%d/%m/%Y'), reverse=True
         )
     
-    def _get_active_products(self) -> List[Product]:
-        return (
-            self.repo.session.query(Product)
-            .filter(Product.stdetalheativo == True)
-            .all()
-        )
+    def find_similar_products(self, description: str, idfamilia: str):
+        fist_word = description.split(' ')[0].upper()
+        matchs = self.repo.find_similar_products(fist_word, idfamilia)
+        
+        if not matchs:
+            raise NotFoundException
+        
+        match_ids = [prod.iddetalhe for prod in matchs]
+        match_suggestions = self.shopping_suggestion(match_ids)
+        return match_suggestions
+    
     
     def _create_suggestion(self, product: Product, repositions_days: int) -> PurchaseSuggestionSchema:
         stock_obj = product.latest_stock

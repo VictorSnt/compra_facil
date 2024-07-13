@@ -2,5 +2,5 @@ from pydantic import BaseModel
 
 
 class GetPerson(BaseModel):
-    idpessoa: str
-    nmpessoa: str
+    id: str
+    name: str

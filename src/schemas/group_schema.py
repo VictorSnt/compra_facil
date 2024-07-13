@@ -2,5 +2,5 @@ from pydantic import BaseModel
 
 
 class GetGroup(BaseModel):
-    idgrupo: str
-    nmgrupo: str
+    id: str
+    name: str
