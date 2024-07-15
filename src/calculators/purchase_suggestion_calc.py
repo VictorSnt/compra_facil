@@ -8,9 +8,9 @@ class PurchaseSuggestionCalc:
     ) -> float:
 
         if days_since_last_purchase <= 0:
-            raise ValueError("days_since_last_purchase must be greater than 0")
-        if sales_after < 0:
-            raise ValueError("sales_after must be non-negative")
+            return 0
+        if sales_after <= 0:
+            return 0
         return sales_after / days_since_last_purchase
 
     @classmethod
@@ -53,8 +53,8 @@ class PurchaseSuggestionCalc:
 
     @classmethod
     def calculate_days_of_supply(cls, stock: float, avg_sales_daily: float) -> float:
-        if stock < 0:
-            raise ValueError("stock must be non-negative")
+        if stock <= 0:
+            return 0
         if avg_sales_daily <= 0:
-            raise ValueError("avg_sales_daily must be greater than 0")
+            return 0
         return stock / avg_sales_daily

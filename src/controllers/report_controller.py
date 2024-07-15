@@ -1,7 +1,7 @@
 #std
 from typing import List
 #ext
-from fastapi import APIRouter, Query, Depends
+from fastapi import APIRouter, Query, Depends, Path
 #app
 from src.schemas.purchase_suggestion_schema import PurchaseSuggestionSchema
 from src.factory.report_service_factory import ReportServiceFactory
@@ -13,9 +13,7 @@ class ReportController:
     router = APIRouter(prefix="/report")
 
     @staticmethod
-    @router.get(
-        '/shopping_suggestion', 
-        response_model=List[PurchaseSuggestionSchema])
+    @router.get('/', response_model=List[PurchaseSuggestionSchema])
     def shopping_suggestion(
         service: ReportService = Depends(
             ReportServiceFactory.build_default_service
@@ -25,7 +23,6 @@ class ReportController:
         response = service.shopping_suggestion(product_ids)
         return response
 
-    
     @staticmethod
     @router.get(
         '/cache_suggestions', 
@@ -37,7 +34,7 @@ class ReportController:
         repositions_days: int = Query(60)
     ):
         return service.cache_suggestions(repositions_days)
-        
+
     @staticmethod
     @router.get(
         '/generate_quote', 
@@ -45,23 +42,21 @@ class ReportController:
     def generate_quote(
         service: ReportService = Depends(
             ReportServiceFactory.build_default_service)):
-        
+
         return service.generate_quote()
-    
-    
+
     @staticmethod
     @router.get(
-        '/similar_product_sugestion', 
+        '/{iddetalhe}/similar', 
         response_model=List[PurchaseSuggestionSchema])
     def find_similar_products(
         service: ReportService = Depends(
             ReportServiceFactory.build_default_service),
-        description: str = Query(),
-        idfamilia:str = Query()
+        iddetalhe: str = Path()
         ):
-        
-        return service.find_similar_products(description, idfamilia)
-    
+
+        return service.find_similar_products(iddetalhe)
+
     @classmethod
     def get_router(cls):
         return cls.router

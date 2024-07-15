@@ -1,17 +1,20 @@
+from os import getenv
+from dotenv import load_dotenv
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm import Session
-from dotenv import load_dotenv
-from os import getenv
 
 
 load_dotenv()
-class Session_Maker:
+class SessionMaker:
 
     @classmethod
-    def create_session(cls) -> Session:
-        SQLALQUEMY_URI = getenv('SQLALQUEMY_URI')
+    def create_session(cls, quotes_db: bool=False) -> Session:
+        if not quotes_db:
+            SQLALQUEMY_URI = getenv('SQLALQUEMY_URI')
+        else:
+            SQLALQUEMY_URI = 'sqlite:///database2.db'
         engine = create_engine(SQLALQUEMY_URI)
-        Session = sessionmaker(bind=engine)
-        session = Session()
+        new_session = sessionmaker(bind=engine)
+        session = new_session()
         return session

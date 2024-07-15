@@ -7,6 +7,7 @@ from src.controllers.group_controller import GroupController
 from src.controllers.person_controller import PersonController
 from src.controllers.product_controller import ProductController
 from src.controllers.report_controller import ReportController
+from src.controllers.quotation_controller import QuotationController
 from src.model.models import (
     Product, Person, Docitem,
     Document, Family, Group,
@@ -28,6 +29,7 @@ app.include_router(GroupController.get_router())
 app.include_router(PersonController.get_router())
 app.include_router(ProductController.get_router())
 app.include_router(ReportController.get_router())
+app.include_router(QuotationController.get_router())
 
 
 # @app.route("/lista_compras")

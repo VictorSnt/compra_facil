@@ -1,6 +1,8 @@
-import redis
-from dotenv import load_dotenv
 from os import getenv
+
+import redis
+from fastapi import HTTPException
+from dotenv import load_dotenv
 
 load_dotenv()
 
@@ -44,24 +46,42 @@ class RedisConnection:
             value = self.redis_client.get(key)
             if value:
                 return value.decode('utf-8')
-            else:
-                print(f"Chave '{key}' não encontrada no Redis")
-                return None
+            print(f"Chave '{key}' não encontrada no Redis")
+            return None
         except redis.RedisError as e:
             print(f"Erro ao obter chave '{key}': {e}")
+            return None
 
-    
     def get_all(self, keys):
         try:
             values = self.redis_client.mget(keys)
             if values:
                 return [value.decode('utf-8') for value in values if value]
-            else:
-                print(f"Chave '{keys}' não encontrada no Redis")
-                return None
+            print(f"Chave '{keys}' não encontrada no Redis")
+            return None
         except redis.RedisError as e:
             print(f"Erro ao obter chave '{keys}': {e}")
-    
+            return None
+
+    def delete(self, key: str):
+        try:
+            # Verifique se a chave existe antes de deletar
+            if not self.redis_client.exists(key):
+                return HTTPException(404, f'Chave {key} não encontrada')
+
+            # Tente deletar a chave
+            result = self.redis_client.delete(key)
+            if result == 0:
+                return HTTPException(400, f'Falha ao deletar a chave: {key}')
+
+            print(f'Chave {key} deletada com sucesso')
+            return None
+        except redis.RedisError as e:
+            print(e)
+            return HTTPException(
+                400, f'Ocorreu uma falha ao inativar a chave: {key}'
+            )
+
     def close(self):
         if self.redis_client:
             self.redis_client.close()

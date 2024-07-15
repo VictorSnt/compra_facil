@@ -1,8 +1,9 @@
 #str
 from typing import List
 #ext
-from fastapi import APIRouter, Query, Depends
+from fastapi import APIRouter, Query, Depends, Path
 #app
+from src.database.redis_cache_maker import RedisConnection
 from src.factory.product_service_factory import ProductServiceFactory
 from src.schemas.product_schema import GetProduct, GetProductWithStock
 from src.services.produto_service import ProductService
@@ -19,33 +20,26 @@ class ProductController:
             ProductServiceFactory.build_default_service
         ),
         only_active: bool = Query(True),
-        familia_filter: List[str] = Query(None),
-        grupo_filter: List[str] = Query(None)
+        family_ids: List[str] = Query(None),
+        group_ids: List[str] = Query(None),
+        supplier_ids: List[str] = Query(None)
         ):
 
-        return service.find_all(only_active, familia_filter, grupo_filter)
+        return service.find_all(only_active, family_ids, group_ids, supplier_ids)
+
 
     @staticmethod
-    @router.get('/supplier_products', response_model=List[GetProduct])
-    def get_supplier_products(
+    @router.delete('/{product_id}')
+    def inativate_product(
         service: ProductService = Depends(
             ProductServiceFactory.build_default_service
         ),
-        fornecedor_ids: List[str] = Query()
-        ):
-
-        return service.find_all_suppliers_products(fornecedor_ids)
-
-    @staticmethod
-    @router.get('/current_stock', response_model=List[GetProductWithStock])
-    def get_current_stock(
-        service: ProductService = Depends(
-            ProductServiceFactory.build_default_service
-        ),
-        product_ids: List[str] = Query(None)
-        ):
-
-        return service.find_products_with_current_stock(product_ids)
+        product_id: str = Path()
+    ):
+        redis_key = f'suggestion:{product_id}'
+        # with RedisConnection() as redis:
+        #     redis.delete(redis_key)
+        return service.inativate_product(product_id)
 
     @classmethod
     def get_router(cls):

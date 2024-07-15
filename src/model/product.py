@@ -2,12 +2,14 @@
 from datetime import datetime, timedelta, date
 import statistics
 #ext
-from sqlalchemy import Boolean, Column, ForeignKey, String, func
+from sqlalchemy import Boolean, Column, ForeignKey, String, func, select
 from sqlalchemy.orm import relationship
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, aliased
 #app
 from src.model.document import Document
 from src.model.docitem import Docitem
+from src.model.order import Order
+from src.model.order_item import OrderItem
 from src.model.stock import Stock
 from src.model.base import Base
 
@@ -43,6 +45,19 @@ class Product(Base):
         overlaps="stocks,product"
     )
 
+    def stock_plus_orders(self, session: Session) -> float:
+        result = (
+            session.query(func.sum(OrderItem.qtpedida))
+            .join(Order, Order.idpedido == OrderItem.idpedido)
+            .filter(Order.cdstatus == 'Aberto')
+            .filter(OrderItem.iddetalhe == self.iddetalhe)
+            .scalar()
+        )
+        result = float(result) if result else 0
+        stock_obj: Stock = self.latest_stock
+        if not stock_obj: return 0
+        return stock_obj.qtestoque + result
+
     def last_relevant_purchase(self, session: Session) -> datetime:
         result = (
             session.query(Document.dtreferencia)
@@ -50,7 +65,7 @@ class Product(Base):
             .filter(
                 Docitem.iddetalhe == self.iddetalhe,
                 Document.tpoperacao == 'C',
-                Document.dtreferencia <= (date.today() - timedelta(days=25))
+                Document.dtreferencia <= (date.today() - timedelta(days=15))
             )
             .order_by(
                 Document.dtreferencia.desc()
@@ -91,14 +106,13 @@ class Product(Base):
         Stock.dtreferencia >= initial_period,
         ).all()
 
-        if not result:
-            raise ValueError("result is none, this product does not have sales")
+        if not result: return 0
 
         daily_demand = [qtvenda or 0 for (qtvenda,) in result ]
         min_data_to_calc = 2
 
-        if len(daily_demand) < min_data_to_calc:
-            raise ValueError("Not enough data to calculate variance")
+        if len(daily_demand) < min_data_to_calc: return 0
+
         demand_variance = statistics.stdev(daily_demand)
         return demand_variance
 
