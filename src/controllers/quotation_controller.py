@@ -24,7 +24,7 @@ class QuotationController:
     def create_quotations(products: List[PurchaseSuggestionSchema] = Body(...)):
         service = QuoteService()
         service.create_quotation(products)
-        return {'message': 'Criado com sucesso'}
+        return {'message': 'Cotação criada com sucesso'}
 
     @classmethod
     def get_router(cls):

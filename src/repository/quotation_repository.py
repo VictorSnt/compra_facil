@@ -48,6 +48,7 @@ class QuotationRepository:
         try:
             session = SessionMaker.own_db_session()
             new_quotation = Quotation()
+            new_quotation.description = 'Teste' 
             session.add(new_quotation)
             session.commit()
             return new_quotation.quotation_id
