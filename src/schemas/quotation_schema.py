@@ -1,9 +1,6 @@
+from datetime import date
+from typing import List
 from pydantic import BaseModel
-
-
-class GetQuotation(BaseModel):
-    quotation_id: int
-    status: bool
 
 
 class GetQuotationItem(BaseModel):
@@ -13,3 +10,10 @@ class GetQuotationItem(BaseModel):
     cdprincipal: str
     dsdetalhe: str
     qtitem: float
+
+class GetQuotation(BaseModel):
+    quotation_id: int
+    description: str
+    created_at: date
+    status: bool
+    items: List[GetQuotationItem]

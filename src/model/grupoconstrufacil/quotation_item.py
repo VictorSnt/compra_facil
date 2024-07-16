@@ -14,3 +14,9 @@ class QuotationItem(Base):
     dsdetalhe = Column(String(80), nullable=False)
     qtitem = Column(Float)
     quotation = relationship("Quotation", back_populates="items")
+
+    def __repr__(self):
+        return (
+            f"<QuotationItem(description={self.dsdetalhe} "
+            f"code={self.cdprincipal})>"
+        )

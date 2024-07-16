@@ -4,6 +4,7 @@ from fastapi import HTTPException
 from src.model.grupoconstrufacil.models import Quotation
 from src.database.db_session_maker import SessionMaker
 from src.exceptions.err import NotFoundException
+from src.schemas.quotation_schema import GetQuotation, GetQuotationItem
 
 
 class QuotationRepository:
@@ -13,6 +14,22 @@ class QuotationRepository:
         try:
             session = SessionMaker.own_db_session()
             result = session.query(Quotation).all()
+            for quote in result:
+                GetQuotation(
+                    quotation_id=quote.quotation_id,
+                    description=quote.description,
+                    created_at=quote.created_at,
+                    status=quote.status,
+                    items=[
+                        GetQuotationItem(
+                        cdprincipal=item.cdprincipal,
+                        dsdetalhe=item.dsdetalhe,
+                        iddetalhe=item.iddetalhe,
+                        qtitem=item.qtitem,
+                        quotation_id=item.quotation_id,
+                        quotation_item_id=item.quotation_item_id) 
+                        for item in quote.items if item]
+                )
             if not result:
                 raise NotFoundException
             return result
