@@ -15,6 +15,17 @@ class PurchaseSuggestionSchema(BaseModel):
     avg_sales_daily: float
     avg_sales_60_days: float
 
+    def __init__(self, **data):
+        super().__init__(**data)
+
+        self.stock = round(self.stock, 2)
+        self.dias_suprimento = round(self.dias_suprimento, 2)
+        self.sugestao = round(self.sugestao, 2)
+        self.sales = round(self.sales, 2)
+        self.security_stock = round(self.security_stock, 2)
+        self.avg_sales_daily = round(self.avg_sales_daily, 2)
+        self.avg_sales_60_days = round(self.avg_sales_60_days, 2)
+
     @classmethod
     def bulk_instanceate(cls, data: List[Dict]):
         response = []

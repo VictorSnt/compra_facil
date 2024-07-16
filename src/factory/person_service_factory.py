@@ -12,7 +12,7 @@ class PersonServiceFactory:
     
     @classmethod
     def build_default_service(
-        cls, session: Session = Depends(SessionMaker.create_session)):
+        cls, session: Session = Depends(SessionMaker.alterdata_session)):
         
         repo = PersonRepository(session, Person)
         return PersonService(repo)

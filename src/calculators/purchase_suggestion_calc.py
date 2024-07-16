@@ -1,3 +1,6 @@
+from math import ceil
+
+
 class PurchaseSuggestionCalc:
 
     @classmethod
@@ -49,7 +52,7 @@ class PurchaseSuggestionCalc:
         if stock < 0:
             raise ValueError("stock must be non-negative")
         quantity_to_buy = avg_sales + security_stock - stock
-        return max(quantity_to_buy, 0)
+        return ceil(max(quantity_to_buy, 0))
 
     @classmethod
     def calculate_days_of_supply(cls, stock: float, avg_sales_daily: float) -> float:

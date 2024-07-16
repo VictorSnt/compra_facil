@@ -13,7 +13,7 @@ class ProductServiceFactory:
 
     @classmethod
     def build_default_service(
-        cls, session: Session = Depends(SessionMaker.create_session)):
+        cls, session: Session = Depends(SessionMaker.alterdata_session)):
 
         repo = ProductRepository(session, Product, ProductInfo)
         return ProductService(repo)

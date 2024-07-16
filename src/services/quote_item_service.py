@@ -6,7 +6,7 @@ from src.repository.quotitem_repository import QuotItemRepository
 from src.schemas.purchase_suggestion_schema import PurchaseSuggestionSchema
 
 
-class QuoteService:
+class QuoteItemService:
 
     def create_quotation(self, products: List[PurchaseSuggestionSchema]):
 
@@ -16,5 +16,5 @@ class QuoteService:
         quotitem_repo.bulk_create(quotation_id, products)
 
     def find_all(self) -> List[Quotation]:
-        quotation_repo = QuotationRepository()
+        quotation_repo = QuotItemRepository()
         return quotation_repo.find_all()
