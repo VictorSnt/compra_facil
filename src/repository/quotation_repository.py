@@ -60,3 +60,26 @@ class QuotationRepository:
         finally:
             if session:
                 session.close()
+                
+    def delete(self, quotation_id) -> str:
+        session = None
+        try:
+            session = SessionMaker.own_db_session()
+            q = (
+                session.query(Quotation)
+                .filter(Quotation.quotation_id == quotation_id)
+            ).scalar()
+            if q:
+                session.delete(q)
+                session.commit()
+            raise NotFoundException
+            
+        except Exception as e:
+            print(e)
+            if session:
+                session.rollback()
+            raise HTTPException(400, 'Falha ao inaticar cotação') from e
+        finally:
+            if session:
+                session.close()
+

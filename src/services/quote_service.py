@@ -8,13 +8,19 @@ from src.schemas.purchase_suggestion_schema import PurchaseSuggestionSchema
 
 class QuoteService:
 
+    def find_all(self) -> List[Quotation]:
+        quotation_repo = QuotationRepository()
+        return quotation_repo.find_all()
+    
+    
     def create_quotation(self, products: List[PurchaseSuggestionSchema]):
-
         quotation_repo = QuotationRepository()
         quotitem_repo = QuotItemRepository()
         quotation_id = quotation_repo.create()
         quotitem_repo.bulk_create(quotation_id, products)
-
-    def find_all(self) -> List[Quotation]:
+        
+    def delete_quotation(self, quotation_id):
         quotation_repo = QuotationRepository()
-        return quotation_repo.find_all()
+        return quotation_repo.delete(quotation_id)
+
+    
