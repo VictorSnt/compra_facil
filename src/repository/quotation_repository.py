@@ -65,20 +65,23 @@ class QuotationRepository:
         session = None
         try:
             session = SessionMaker.own_db_session()
-            q = (
+            q: Quotation| None  = (
                 session.query(Quotation)
                 .filter(Quotation.quotation_id == quotation_id)
             ).scalar()
             if q:
-                session.delete(q)
+                q.status = False
+                session.add(q)
                 session.commit()
+                return
+            
             raise NotFoundException
             
         except Exception as e:
             print(e)
             if session:
                 session.rollback()
-            raise HTTPException(400, 'Falha ao inaticar cotação') from e
+            raise HTTPException(400, 'Falha ao inativar cotação') from e
         finally:
             if session:
                 session.close()
