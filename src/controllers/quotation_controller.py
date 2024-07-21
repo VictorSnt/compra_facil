@@ -4,7 +4,7 @@ from typing import List
 from fastapi import APIRouter, Body, Path
 #app
 from src.schemas.purchase_suggestion_schema import PurchaseSuggestionSchema
-from src.schemas.quotation_schema import GetQuotation
+from src.schemas.quotation_schema import GetQuotation, GetQuotationItem
 from src.services.quote_service import QuoteService
 
 
@@ -18,7 +18,14 @@ class QuotationController:
     def get_quotations():
         service = QuoteService()
         return service.find_all()
-
+    
+    @staticmethod
+    @router.get('/{quotation_id}/items', response_model=List[GetQuotationItem])
+    def get_quotations(quotation_id: str =  Path()):
+        service = QuoteService()
+        quotes = service.find_by_quote_id(quotation_id)
+        return quotes.items
+    
     @staticmethod
     @router.post('/')
     def create_quotations(products: List[PurchaseSuggestionSchema] = Body(...)):

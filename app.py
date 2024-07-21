@@ -8,7 +8,9 @@ from src.controllers.person_controller import PersonController
 from src.controllers.product_controller import ProductController
 from src.controllers.report_controller import ReportController
 from src.controllers.quotation_controller import QuotationController
+from src.controllers.quote_submit_controller import QuotationSubmitController
 from src.controllers.quotation_item_controller import QuotationItemController
+
 from src.model.models import (
     Product, Person, Docitem,
     Document, Family, Group,
@@ -32,6 +34,8 @@ app.include_router(ProductController.get_router())
 app.include_router(ReportController.get_router())
 app.include_router(QuotationController.get_router())
 app.include_router(QuotationItemController.get_router())
+app.include_router(QuotationSubmitController.get_router())
+
 
 
 if __name__ == "__main__":

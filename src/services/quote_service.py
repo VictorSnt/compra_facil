@@ -4,6 +4,7 @@ from src.model.grupoconstrufacil.quotation import Quotation
 from src.repository.quotation_repository import QuotationRepository
 from src.repository.quotitem_repository import QuotItemRepository
 from src.schemas.purchase_suggestion_schema import PurchaseSuggestionSchema
+from src.schemas.quotation_schema import GetQuotation
 
 
 class QuoteService:
@@ -12,6 +13,9 @@ class QuoteService:
         quotation_repo = QuotationRepository()
         return quotation_repo.find_all()
     
+    def find_by_quote_id(self, quotation_id) -> GetQuotation:
+        quotation_repo = QuotationRepository()
+        return quotation_repo.find_by_id(quotation_id)[0]
     
     def create_quotation(self, products: List[PurchaseSuggestionSchema]):
         quotation_repo = QuotationRepository()

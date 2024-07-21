@@ -14,25 +14,33 @@ class QuotationRepository:
         try:
             session = SessionMaker.own_db_session()
             result = session.query(Quotation).all()
-            for quote in result:
-                GetQuotation(
-                    quotation_id=quote.quotation_id,
-                    description=quote.description,
-                    created_at=quote.created_at,
-                    status=quote.status,
-                    items=[
-                        GetQuotationItem(
-                        cdprincipal=item.cdprincipal,
-                        dsdetalhe=item.dsdetalhe,
-                        iddetalhe=item.iddetalhe,
-                        qtitem=item.qtitem,
-                        quotation_id=item.quotation_id,
-                        quotation_item_id=item.quotation_item_id) 
-                        for item in quote.items if item]
-                )
             if not result:
                 raise NotFoundException
-            return result
+            
+            return self.__format_response(result)
+
+        except Exception as e:
+            print(e)
+            if session:
+                session.rollback()
+            raise NotFoundException from e
+        finally:
+            if session:
+                session.close()
+                
+    def find_by_id(self, quotation_id) -> List[GetQuotation]:
+        session = None
+        try:
+            session = SessionMaker.own_db_session()
+            result = (
+                session.query(Quotation)
+                .filter(Quotation.quotation_id == quotation_id) 
+            ).all()
+            
+            if not result:
+                raise NotFoundException
+            
+            return self.__format_response(result)
 
         except Exception as e:
             print(e)
@@ -86,3 +94,22 @@ class QuotationRepository:
             if session:
                 session.close()
 
+    def __format_response(self, data):
+        response = []
+        for quote in data:
+            response.append(GetQuotation(
+                quotation_id=quote.quotation_id,
+                description=quote.description,
+                created_at=quote.created_at,
+                status=quote.status,
+                items=[
+                    GetQuotationItem(
+                    cdprincipal=item.cdprincipal,
+                    dsdetalhe=item.dsdetalhe,
+                    iddetalhe=item.iddetalhe,
+                    qtitem=item.qtitem,
+                    quotation_id=item.quotation_id,
+                    quotation_item_id=item.quotation_item_id) 
+                    for item in quote.items if item]
+            ))
+        return response
