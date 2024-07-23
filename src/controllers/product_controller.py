@@ -1,9 +1,10 @@
 #str
 from typing import List
 #ext
-from fastapi import APIRouter, Query, Depends, Path
+from fastapi import APIRouter, HTTPException, Query, Depends, Path
 #app
 from src.database.redis_cache_maker import RedisConnection
+from src.exceptions.err import NotFoundException
 from src.factory.product_service_factory import ProductServiceFactory
 from src.schemas.product_schema import GetProduct, GetProductWithStock
 from src.services.produto_service import ProductService
@@ -37,9 +38,13 @@ class ProductController:
         product_id: str = Path()
     ):
         redis_key = f'suggestion:{product_id}'
-        # with RedisConnection() as redis:
-        #     redis.delete(redis_key)
-        return service.inativate_product(product_id)
+        res = service.inativate_product(product_id)
+        if isinstance(res, HTTPException): 
+            raise HTTPException(400, 'erro')
+        with RedisConnection() as redis:
+            redis.delete(redis_key)
+            pass
+        return res
 
     @classmethod
     def get_router(cls):

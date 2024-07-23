@@ -31,6 +31,5 @@ class PurchaseSuggestionSchema(BaseModel):
         response = []
         for dict_obj in data:
             if not dict_obj: continue
-            if dict_obj['dias_suprimento'] > 45: continue
             response.append(cls(**dict_obj))
         return response

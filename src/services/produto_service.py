@@ -1,5 +1,5 @@
 from typing import List
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, status
 
 from src.exceptions.err import NotFoundException
 from src.repository.product_repository import ProductRepository
@@ -54,8 +54,11 @@ class ProductService:
             raise NotFoundException
         product.stdetalheativo = False
         try:
-            # self.repo.session.add(product)
-            # self.repo.session.commit()
+            last_stock = product.latest_stock
+            if last_stock.qtestoque > 0: 
+                raise HTTPException(400, 'Estoque maior que zero')
+            self.repo.session.add(product)
+            self.repo.session.commit()
             return {f'Produto {product} inativado'}
         except Exception as e:
             print(e)

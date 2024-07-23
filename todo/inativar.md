@@ -1,0 +1,1 @@
+# inativar só com estoque = 0
