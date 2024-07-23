@@ -69,8 +69,7 @@ class ReportService:
             self.repo.find_active_products()
         ]
         current_suggestions = self.shopping_suggestion(product_ids)
-        quote = [suggestion for suggestion in current_suggestions
-            if suggestion.dias_suprimento <= 30]
+        quote = [suggestion for suggestion in current_suggestions]
         return sorted(quote, key= lambda sugg: datetime.strptime(
             sugg.dtreferencia, '%d/%m/%Y'), reverse=True
         )
