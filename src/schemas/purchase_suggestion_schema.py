@@ -33,3 +33,8 @@ class PurchaseSuggestionSchema(BaseModel):
             if not dict_obj: continue
             response.append(cls(**dict_obj))
         return response
+
+
+class CreateQuotationSchema(BaseModel):
+    title: str
+    products: List[PurchaseSuggestionSchema]

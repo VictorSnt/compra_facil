@@ -51,12 +51,12 @@ class QuotationRepository:
             if session:
                 session.close()
 
-    def create(self) -> str:
+    def create(self, title: str) -> str:
         session = None
         try:
             session = SessionMaker.own_db_session()
             new_quotation = Quotation()
-            new_quotation.description = 'Teste' 
+            new_quotation.description = title 
             session.add(new_quotation)
             session.commit()
             return new_quotation.quotation_id

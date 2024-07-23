@@ -3,7 +3,7 @@ from typing import List
 #ext
 from fastapi import APIRouter, Body, Path
 #app
-from src.schemas.purchase_suggestion_schema import PurchaseSuggestionSchema
+from src.schemas.purchase_suggestion_schema import CreateQuotationSchema, PurchaseSuggestionSchema
 from src.schemas.quotation_schema import GetQuotation, GetQuotationItem
 from src.services.quote_service import QuoteService
 
@@ -28,9 +28,9 @@ class QuotationController:
     
     @staticmethod
     @router.post('/')
-    def create_quotations(products: List[PurchaseSuggestionSchema] = Body(...)):
+    def create_quotations(quotation: CreateQuotationSchema = Body(...)):
         service = QuoteService()
-        service.create_quotation(products)
+        service.create_quotation(quotation)
         return {'message': 'Cotação criada com sucesso'}
 
     @staticmethod
