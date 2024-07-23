@@ -7,6 +7,7 @@ class QuotationProcessor:
     def __init__(self):
         self.user_data: Dict[int, Dict] = defaultdict(lambda: {
             "user_id": None,
+            "user_name": None,
             "submited_count": 0,
             "cheaper_items_count": 0,
             "total": 0.0,
@@ -25,24 +26,26 @@ class QuotationProcessor:
         quotations = [quote.model_dump() for quote in quotations]
 
         for quotation in quotations:
-            user_id = quotation.get("user_id")  # Use .get() to safely access user_id
+            user_id = quotation.get("user_id") 
+            user_name = quotation.get("user_name") 
             items = quotation.get("items", [])
             quotation_qtitems = len(items)
 
-            filtered_items = [item for item in items if item.get("item_quant") is not None and item.get("item_price") is not None]
+            filtered_items = [item for item in items if item.get("qtitem") is not None and item.get("item_price") is not None]
 
             if user_id is None:
                 raise ValueError("User ID should not be None")
 
             self.user_data[user_id]["user_id"] = user_id
+            self.user_data[user_id]["user_name"] = user_name
             self.user_data[user_id]["submited_count"] += len(filtered_items)
-            self.user_data[user_id]["total"] += round(sum(item["item_price"] * item["item_quant"] for item in filtered_items), 2)
+            self.user_data[user_id]["total"] += round(sum(item["item_price"] * item["qtitem"] for item in filtered_items), 2)
             self.user_data[user_id]["quotation_items_count"] = quotation_qtitems
             self.user_data[user_id]["items"].extend(filtered_items)
 
             for item in filtered_items:
                 item_name = item["item_name"]
-                item_quant = item["item_quant"]
+                qtitem = item["qtitem"]
                 item_price = item["item_price"]
                 self.item_price_map[item_name].append((user_id, item_price))
 
@@ -58,6 +61,7 @@ class QuotationProcessor:
         for user_id, data in self.user_data.items():
             quotation_data = UserQuotation(
                 user_id=user_id,
+                user_name=data["user_name"],
                 submited_count=data["submited_count"],
                 cheaper_items_count=data["cheaper_items_count"],
                 total=data["total"],

@@ -15,7 +15,7 @@ class GetQuotationSubmitItem(BaseModel):
     submission_item_id: int
     submission_id: int
     item_name: str
-    item_quant: int|None
+    qtitem: int|None
     item_brand: str|None
     item_price: float|None
     item_brand2: str|None
@@ -33,6 +33,7 @@ class GetQuotationSubmit(BaseModel):
     quotation_id: int
     submission_id: int
     user_id: int
+    user_name: str
     items: List[GetQuotationSubmitItem]
 
 
@@ -40,10 +41,11 @@ class Item(BaseModel):
     item_name: str
     item_brand: Union[str, None]
     item_price: Union[float, None]
-    item_quant: Union[float, None]
+    qtitem: Union[float, None]
 
 class UserQuotation(BaseModel):
     user_id: int
+    user_name: str
     submited_count: int
     cheaper_items_count: int
     total: float

@@ -14,7 +14,7 @@ class QuotationSubmissionItem(Base):
         ForeignKey('quotation_submissions.submission_id'), nullable=False
     )
     item_name = Column(String(80), nullable=False)
-    item_quant = Column(Integer, nullable=True)
+    qtitem = Column(Integer, nullable=True)
     item_brand = Column(String(80), nullable=True)
     item_price = Column(Float, nullable=True)
     item_brand2 = Column(String(80), nullable=True)

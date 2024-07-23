@@ -17,14 +17,14 @@ class QuotationSubmitController:
     def get_quotations_submitons(quotation_id: int = Path()):
         service = QuoteSubmitService()
         return service.find_by_id(quotation_id)
-        
+
     @staticmethod
     @router.get('/processed/{quotation_id}', response_model=List[UserQuotation])
     def process_quotations(quotation_id: int = Path()):
         service = QuoteSubmitService()
         quotes = service.find_by_id(quotation_id)
         return service.process_quotations(quotes)
-        
+
     @classmethod
     def get_router(cls):
         return cls.router

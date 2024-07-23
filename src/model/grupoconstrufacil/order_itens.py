@@ -1,6 +1,5 @@
 #ext
-from tokenize import String
-from sqlalchemy import Column, Float, Integer, ForeignKey
+from sqlalchemy import Column, String, Float, Integer, ForeignKey
 from sqlalchemy.orm import relationship
 #app
 from src.model.grupoconstrufacil.base import Base

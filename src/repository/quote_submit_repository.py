@@ -16,16 +16,17 @@ class QuotSubimitRepository:
                 .filter(QuotationSubmission.quotation_id == quotation_id)
             ).all()
             if not quotes: raise NotFoundException
-
+ 
             return (
                 [
                     GetQuotationSubmit(
                     quotation_id=quote.quotation_id,
                     submission_id=quote.submission_id,
-                    user=quote.user_id,
+                    user_id=quote.user_id,
+                    user_name=quote.user.name,
                     items=[
                         GetQuotationSubmitItem(
-                            item_quant=item.item_quant,
+                            qtitem=item.qtitem,
                             submission_item_id=item.submission_item_id,
                             submission_id=item.submission_id,
                             item_brand=item.item_brand,
@@ -34,7 +35,7 @@ class QuotSubimitRepository:
                             item_price=item.item_price,
                             item_price2=item.item_price2,
                         )for item in quote.quotation_items if item
-                    ])for quote in quotes 
+                    ])for quote in quotes
                 ]
             )
         except Exception as e:
