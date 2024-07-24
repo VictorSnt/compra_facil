@@ -44,6 +44,15 @@ class Product(Base):
         uselist=False,
         overlaps="stocks,product"
     )
+    
+    latest_buy = relationship(
+        "Stock",
+        primaryjoin="and_(Product.iddetalhe == Stock.iddetalhe,"
+        "Stock.dtreferencia == (select(func.max(Stock.dtreferencia))"
+        ".where(Stock.iddetalhe == Product.iddetalhe, Stock.qtcompra > 0)))",
+        uselist=False,
+        overlaps="stocks,product"
+    )
 
     def stock_plus_orders(self, session: Session) -> float:
         result = (

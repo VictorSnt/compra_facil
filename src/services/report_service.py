@@ -91,7 +91,12 @@ class ReportService:
         self, product: Product,
         reposition_period: int
     ) -> PurchaseSuggestionSchema:
-
+        latest_compra =  product.latest_buy
+        if latest_compra:
+         
+            vllatestcompra = latest_compra.vlcompra / latest_compra.qtcompra
+        else:
+            vllatestcompra = 0
         qtstock = product.stock_plus_orders(self.repo.session)
         last_purchase = product.last_relevant_purchase(self.repo.session)
         days_since_last_purchase = (datetime.now() - last_purchase).days
@@ -132,6 +137,7 @@ class ReportService:
             iddetalhe=str(product.iddetalhe),
             cdprincipal=str(product.cdprincipal),
             dsdetalhe=str(product.dsdetalhe),
+            vllastcompra = vllatestcompra,
             stock=qtstock,
             dias_suprimento=days_of_supply,
             sugestao=quantity_to_buy,

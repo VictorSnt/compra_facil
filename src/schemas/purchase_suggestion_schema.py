@@ -4,6 +4,7 @@ from pydantic import BaseModel
 
 class PurchaseSuggestionSchema(BaseModel):
     iddetalhe: str
+    vllastcompra: float
     cdprincipal: str
     dsdetalhe: str
     stock: float

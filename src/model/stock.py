@@ -10,6 +10,7 @@ class Stock(Base):
     qtcompra = Column(Float)
     qtvenda = Column(Float)
     qtestoque = Column(Float)
+    vlcompra = Column(Float)
     product = relationship("Product", back_populates="stocks", primaryjoin="Stock.iddetalhe == Product.iddetalhe")
     
     def __repr__(self):
