@@ -43,6 +43,7 @@ class Item(BaseModel):
     item_brand: Union[str, None]
     item_price: Union[float, None]
     qtitem: Union[float, None]
+    vllastcompra: float
 
 class UserQuotation(BaseModel):
     user_id: int

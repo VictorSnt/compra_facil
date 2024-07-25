@@ -36,15 +36,16 @@ class QuotSubimitRepository:
                             item_brand2=item.item_brand2,
                             item_name=item.item_name,
                             item_price=item.item_price,
-                            vllastcompra = (
-                                adt_session.query(Stock.vlcompra)
+                            vllastcompra = round(
+                                (adt_session.query(Stock.vlcompra / Stock.qtcompra)
                                 .join(Product)
                                 .filter(Product.dsdetalhe == item.item_name)
                                 .filter(Stock.qtcompra > 0)
                                 .filter(Stock.vlcompra > 1)
                                 .order_by(Stock.dtreferencia.desc())
                                 .limit(1)
-                            ).scalar() or 0,
+                                .scalar()) or 0, 2
+                            ),
                             item_price2=item.item_price2,
                         )for item in quote.quotation_items if item
                     ])for quote in quotes
