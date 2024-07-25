@@ -2,6 +2,8 @@ from typing import List
 from src.model.grupoconstrufacil.models import QuotationSubmission
 from src.database.db_session_maker import SessionMaker
 from src.exceptions.err import NotFoundException
+from src.model.product import Product
+from src.model.stock import Stock
 from src.schemas.quotation_schema import GetQuotationSubmit, GetQuotationSubmitItem
 
 
@@ -11,12 +13,13 @@ class QuotSubimitRepository:
         session = None
         try:
             session = SessionMaker.own_db_session()
+            adt_session = SessionMaker.alterdata_session()
             quotes: List[QuotationSubmission] | None = (
                 session.query(QuotationSubmission)
                 .filter(QuotationSubmission.quotation_id == quotation_id)
             ).all()
             if not quotes: raise NotFoundException
- 
+
             return (
                 [
                     GetQuotationSubmit(
@@ -33,6 +36,15 @@ class QuotSubimitRepository:
                             item_brand2=item.item_brand2,
                             item_name=item.item_name,
                             item_price=item.item_price,
+                            vllastcompra = (
+                                adt_session.query(Stock.vlcompra)
+                                .join(Product)
+                                .filter(Product.dsdetalhe == item.item_name)
+                                .filter(Stock.qtcompra > 0)
+                                .filter(Stock.vlcompra > 1)
+                                .order_by(Stock.dtreferencia.desc())
+                                .limit(1)
+                            ).scalar() or 0,
                             item_price2=item.item_price2,
                         )for item in quote.quotation_items if item
                     ])for quote in quotes
@@ -46,3 +58,5 @@ class QuotSubimitRepository:
         finally:
             if session:
                 session.close()
+            if adt_session:
+                adt_session.close()

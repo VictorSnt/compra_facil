@@ -18,6 +18,7 @@ class GetQuotationSubmitItem(BaseModel):
     qtitem: int|None
     item_brand: str|None
     item_price: float|None
+    vllastcompra: float
     item_brand2: str|None
     item_price2: float|None
 

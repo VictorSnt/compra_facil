@@ -26,8 +26,8 @@ class QuotationProcessor:
         quotations = [quote.model_dump() for quote in quotations]
 
         for quotation in quotations:
-            user_id = quotation.get("user_id") 
-            user_name = quotation.get("user_name") 
+            user_id = quotation.get("user_id")
+            user_name = quotation.get("user_name")
             items = quotation.get("items", [])
             quotation_qtitems = len(items)
 
