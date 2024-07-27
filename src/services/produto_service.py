@@ -54,8 +54,8 @@ class ProductService:
             raise NotFoundException
         product.stdetalheativo = False
         try:
-            last_stock = product.latest_stock
-            if last_stock.qtestoque > 0: 
+            qtestoque = product.latest_stock(self.repo.session)
+            if qtestoque > 0: 
                 raise HTTPException(400, 'Estoque maior que zero')
             self.repo.session.add(product)
             self.repo.session.commit()

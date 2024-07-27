@@ -36,14 +36,17 @@ class Product(Base):
     )
     docitems = relationship("Docitem", back_populates="products")
     stocks = relationship("Stock", back_populates="product")
-    latest_stock = relationship(
-        "Stock",
-        primaryjoin="and_(Product.iddetalhe == Stock.iddetalhe,"
-        "Stock.dtreferencia == (select(func.max(Stock.dtreferencia))"
-        ".where(Stock.iddetalhe == Product.iddetalhe)))",
-        uselist=False,
-        overlaps="stocks,product"
-    )
+    
+    def latest_stock (self, session: Session):
+        stock = (
+            session.query(Stock.qtestoque)
+            .join(Product)
+            .filter(Stock.iddetalhe == self.iddetalhe)
+            .order_by(Stock.dtreferencia.desc())
+            .limit(1)
+        ).scalar()
+        return float(stock) if stock else 0
+    
     
     latest_buy = relationship(
         "Stock",
@@ -55,17 +58,17 @@ class Product(Base):
     )
 
     def stock_plus_orders(self, session: Session) -> float:
-        result = (
+        orders = (
             session.query(func.sum(OrderItem.qtpedida))
             .join(Order, Order.idpedido == OrderItem.idpedido)
             .filter(Order.cdstatus == 'Aberto')
             .filter(OrderItem.iddetalhe == self.iddetalhe)
             .scalar()
         )
-        result = float(result) if result else 0
-        stock_obj: Stock = self.latest_stock
-        if not stock_obj: return 0
-        return stock_obj.qtestoque + result
+        orders = float(orders) if orders else 0
+        qtestoque: float = self.latest_stock(session)
+        if not qtestoque: return 0 + orders
+        return qtestoque + orders
 
     def last_relevant_purchase(self, session: Session) -> datetime:
         result = (
