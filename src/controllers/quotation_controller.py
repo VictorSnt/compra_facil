@@ -18,14 +18,14 @@ class QuotationController:
     def get_quotations():
         service = QuoteService()
         return service.find_all()
-    
+
     @staticmethod
     @router.get('/{quotation_id}/items', response_model=List[GetQuotationItem])
-    def get_quotations(quotation_id: str =  Path()):
+    def get_quotations_items(quotation_id: str =  Path()):
         service = QuoteService()
         quotes = service.find_by_quote_id(quotation_id)
         return quotes.items
-    
+
     @staticmethod
     @router.post('/')
     def create_quotations(quotation: CreateQuotationSchema = Body(...)):
@@ -39,8 +39,8 @@ class QuotationController:
         service = QuoteService()
         service.delete_quotation(quotation_id)
         return {'message': 'Cotação encerrada'}
-    
-    
+
+
     @classmethod
     def get_router(cls):
         return cls.router

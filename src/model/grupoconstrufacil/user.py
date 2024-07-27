@@ -15,3 +15,4 @@ class User(Base):
     updated_at = Column(TIMESTAMP)
 
     quote_submitions = relationship('QuotationSubmission', back_populates="user")
+    orders = relationship('Order', back_populates="user")

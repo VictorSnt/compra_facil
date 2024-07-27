@@ -16,7 +16,7 @@ class QuotationRepository:
             result = session.query(Quotation).all()
             if not result:
                 raise NotFoundException
-            
+
             return self.__format_response(result)
 
         except Exception as e:
@@ -27,7 +27,7 @@ class QuotationRepository:
         finally:
             if session:
                 session.close()
-                
+
     def find_by_id(self, quotation_id) -> List[GetQuotation]:
         session = None
         try:
@@ -36,10 +36,10 @@ class QuotationRepository:
                 session.query(Quotation)
                 .filter(Quotation.quotation_id == quotation_id) 
             ).all()
-            
+
             if not result:
                 raise NotFoundException
-            
+
             return self.__format_response(result)
 
         except Exception as e:
@@ -68,7 +68,7 @@ class QuotationRepository:
         finally:
             if session:
                 session.close()
-                
+
     def delete(self, quotation_id) -> str:
         session = None
         try:
@@ -82,9 +82,9 @@ class QuotationRepository:
                 session.add(q)
                 session.commit()
                 return
-            
+
             raise NotFoundException
-            
+
         except Exception as e:
             print(e)
             if session:

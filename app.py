@@ -4,6 +4,7 @@ from fastapi import FastAPI
 #app
 from src.controllers.family_controller import FamilyController
 from src.controllers.group_controller import GroupController
+from src.controllers.order_controller import OrderControlle
 from src.controllers.person_controller import PersonController
 from src.controllers.product_controller import ProductController
 from src.controllers.report_controller import ReportController
@@ -35,6 +36,7 @@ app.include_router(ReportController.get_router())
 app.include_router(QuotationController.get_router())
 app.include_router(QuotationItemController.get_router())
 app.include_router(QuotationSubmitController.get_router())
+app.include_router(OrderControlle.get_router())
 
 
 
