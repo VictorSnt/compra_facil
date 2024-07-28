@@ -19,5 +19,5 @@ class GetOrderItens(CreateOrderItems):
 class GetOrder(CreateOrder):
     order_id: int
     user_name: str
+    status: str
     items: List[GetOrderItens]
-    

@@ -18,7 +18,6 @@ class OrdersRepository:
             session = SessionMaker.own_db_session()
             result = (
                 session.query(Order)
-                .filter(Order.status == True)
                 .all()
             )
 
@@ -28,7 +27,6 @@ class OrdersRepository:
             return self.__format_response(result)
 
         except Exception as e:
-            print(e)
             if session:
                 session.rollback()
             raise NotFoundException from e
@@ -67,7 +65,6 @@ class OrdersRepository:
             result = (
                 session.query(Order)
                 .filter(Order.order_id == order_id)
-                .filter(Order.status == True)
             ).all()
 
             if not result:
@@ -131,12 +128,14 @@ class OrdersRepository:
     def __format_response(self, data: List[Order]):
         response = []
         for order in data:
+            status = "Em Aberto" if order.status else "Concluido"
             user: User = order.user
             items: List[OrderItem] = order.items
             response.append(GetOrder(
                 order_id=order.order_id,
                 user_id=user.id,
                 user_name=user.name,
+                status=status,
                 items=[
                     GetOrderItens(
                     quotation_item_id=item.quotation_item_id,

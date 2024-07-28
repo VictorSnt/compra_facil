@@ -43,7 +43,7 @@ class OrderItemRepository:
             return True
 
         except IntegrityError as e:
-            
+
             if isinstance(e.params, list):
                 item_name = e.params[0][3]
             elif isinstance(e.params, tuple):

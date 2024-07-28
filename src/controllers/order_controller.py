@@ -20,6 +20,17 @@ class OrderControlle:
         return orders
 
     @staticmethod
+    @router.get('/{order_id}/items', response_model=List[GetOrderItens])
+    def get_items_by_order_id(order_id: str =  Path()):
+        service = OrderService()
+        orders = service.find_by_order_id(order_id)
+        if not orders.items:
+            raise HTTPException(
+                404, 'Nenhum item nesse pedido'
+            )
+        return orders.items
+
+    @staticmethod
     @router.get('/{user_id}', response_model=List[GetOrderItens])
     def get_orders_by_user_id(user_id: str =  Path()):
         service = OrderService()
