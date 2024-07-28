@@ -4,7 +4,7 @@ from typing import List
 from fastapi import APIRouter, Body
 #app
 from src.services.order_item_service import OrderItemService
-from src.schemas.order_schema import GetOrderItens, CreateOrderItems
+from src.schemas.order_schema import GetOrderItem, CreateOrderItems
 
 
 class OrderItemController:
@@ -12,7 +12,7 @@ class OrderItemController:
     router = APIRouter(prefix='/order_item')
 
     @staticmethod
-    @router.get('/', response_model=List[GetOrderItens])
+    @router.get('/', response_model=List[GetOrderItem])
     def get_order_items():
         service = OrderItemService()
         return service.find_all()

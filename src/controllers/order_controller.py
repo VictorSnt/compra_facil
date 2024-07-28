@@ -3,8 +3,8 @@ from typing import List
 #ext
 from fastapi import APIRouter, Body, HTTPException, Path
 #app
-from src.schemas.order_schema import CreateOrder, GetOrder, GetOrderItens
-from src.services.order_service import OrderService
+from src.schemas.order_schema import CreateOrder, GetOrder, GetOrderItem
+from src.services.order_service import OrderService, UpdateOrderItem
 
 
 
@@ -20,7 +20,7 @@ class OrderControlle:
         return orders
 
     @staticmethod
-    @router.get('/{order_id}/items', response_model=List[GetOrderItens])
+    @router.get('/{order_id}/items', response_model=List[GetOrderItem])
     def get_items_by_order_id(order_id: str =  Path()):
         service = OrderService()
         orders = service.find_by_order_id(order_id)
@@ -31,14 +31,29 @@ class OrderControlle:
         return orders.items
 
     @staticmethod
-    @router.get('/{user_id}', response_model=List[GetOrderItens])
+    @router.put('/item/{order_item_id}', response_model=GetOrderItem)
+    def update_order_item(
+        order_item_id: str = Path(),
+        updated_item: UpdateOrderItem = Body()
+    ):
+        service = OrderService()
+        return service.update_order_item(order_item_id, updated_item)
+
+    @staticmethod
+    @router.delete('/item/{order_item_id}', response_model=GetOrderItem)
+    def delete_order_item(order_item_id: str = Path(),):
+        service = OrderService()
+        return service.delete_order_item(order_item_id)
+
+    @staticmethod
+    @router.get('/{user_id}', response_model=List[GetOrderItem])
     def get_orders_by_user_id(user_id: str =  Path()):
         service = OrderService()
         orders = service.find_by_user_id(user_id)
         return orders
 
     @staticmethod
-    @router.post('/{order_id}')
+    @router.delete('/{order_id}')
     def finish_order(order_id: str = Path()):
         service = OrderService()
         service.finish_order(order_id)

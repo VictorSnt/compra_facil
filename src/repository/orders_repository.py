@@ -5,9 +5,9 @@ from src.model.grupoconstrufacil.models import Order
 from src.database.db_session_maker import SessionMaker
 from src.exceptions.err import NotFoundException
 from src.model.grupoconstrufacil.user import User
-from src.model.order_item import OrderItem
-from src.schemas.order_schema import CreateOrder
-from src.schemas.order_schema import GetOrder, GetOrderItens
+from src.model.grupoconstrufacil.order_itens import OrderItem
+from src.schemas.order_schema import CreateOrder, UpdateOrderItem
+from src.schemas.order_schema import GetOrder, GetOrderItem
 
 
 class OrdersRepository:
@@ -125,6 +125,61 @@ class OrdersRepository:
             if session:
                 session.close()
 
+    def update_order_item(self, order_item_id: int, updated_item: UpdateOrderItem):
+        session = None
+        try:
+            session = SessionMaker.own_db_session()
+            item: OrderItem|None = (
+                session.query(OrderItem)
+                .join(Order)
+                .filter(OrderItem.order_item_id == order_item_id)
+                .filter(Order.status == True)
+            ).scalar()
+
+            if not item:
+                raise HTTPException(
+                    404, 'não foi possivel editar, Esse pedido pode esta finalizado'
+                )
+            item.vlcompra = updated_item.vlcompra or item.vlcompra
+            item.qtcompra = updated_item.qtcompra or item.qtcompra
+            session.add(item)
+            session.commit()
+            session.refresh(item)
+            return item
+        except Exception as e:
+            if session:
+                session.rollback()
+            raise e
+        finally:
+            if session:
+                session.close()
+
+    def delete_order_item(self, order_item_id: int):
+        session = None
+        try:
+            session = SessionMaker.own_db_session()
+            item: OrderItem|None = (
+                session.query(OrderItem)
+                .join(Order)
+                .filter(OrderItem.order_item_id == order_item_id)
+                .filter(Order.status == True)
+            ).scalar()
+
+            if not item:
+                raise HTTPException(
+                    404, 'não foi possivel deletar, Esse pedido pode esta finalizado'
+                )
+            session.delete(item)
+            session.commit()
+            return item
+        except Exception as e:
+            if session:
+                session.rollback()
+            raise e
+        finally:
+            if session:
+                session.close()
+
     def __format_response(self, data: List[Order]):
         response = []
         for order in data:
@@ -137,7 +192,7 @@ class OrdersRepository:
                 user_name=user.name,
                 status=status,
                 items=[
-                    GetOrderItens(
+                    GetOrderItem(
                     quotation_item_id=item.quotation_item_id,
                     order_item_id=item.order_item_id,
                     dsdetalhe=item.dsdetalhe,

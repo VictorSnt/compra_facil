@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 from pydantic import BaseModel
 
 class CreateOrder(BaseModel):
@@ -12,7 +12,7 @@ class CreateOrderItems(BaseModel):
     qtcompra: float
     vlcompra: float
 
-class GetOrderItens(CreateOrderItems):
+class GetOrderItem(CreateOrderItems):
     order_item_id: int
 
 
@@ -20,4 +20,9 @@ class GetOrder(CreateOrder):
     order_id: int
     user_name: str
     status: str
-    items: List[GetOrderItens]
+    items: List[GetOrderItem]
+
+
+class UpdateOrderItem(BaseModel):
+    qtcompra: Optional[float] = None
+    vlcompra: Optional[float] = None
