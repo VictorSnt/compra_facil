@@ -25,7 +25,7 @@ class OrderControlle:
         service = OrderService()
         orders = service.find_by_user_id(user_id)
         return orders
-    
+
     @staticmethod
     @router.post('/{order_id}')
     def finish_order(order_id: str = Path()):
@@ -50,9 +50,10 @@ class OrderControlle:
     def get_or_create(user_id: str = Path()):
         service = OrderService()
         try:
-            order = service.find_by_user_id(user_id)
-            return order.order_id
-        except HTTPException:
+            order_id = service.find_by_user_id(user_id)
+            return order_id
+        except HTTPException as e:
+            print(e)
             return service.create_order(CreateOrder(user_id=user_id))
 
     @classmethod

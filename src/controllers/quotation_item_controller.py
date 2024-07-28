@@ -24,7 +24,7 @@ class QuotationItemController:
         products: List[PurchaseSuggestionSchema] = Body(...)
     ):
         service = QuoteItemService()
-        service.create_quotation(products)
+        service.create_quotation('title', products)
         return {'message': 'Criado com sucesso'}
 
     @classmethod

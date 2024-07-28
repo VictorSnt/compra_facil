@@ -40,16 +40,16 @@ class OrdersRepository:
         session = None
         try:
             session = SessionMaker.own_db_session()
-            result = (
+            result: Order|None = (
                 session.query(Order)
                 .filter(Order.user_id == user_id)
                 .filter(Order.status == True)
-            ).all()
+            ).scalar()
 
             if not result:
                 raise NotFoundException
 
-            return self.__format_response(result)
+            return result.order_id
 
         except Exception as e:
             print(e)
@@ -91,6 +91,7 @@ class OrdersRepository:
             new_order = Order(**order_dto.model_dump())
             session.add(new_order)
             session.commit()
+            session.refresh(new_order)
             return new_order.order_id
         except Exception as e:
             print(e)

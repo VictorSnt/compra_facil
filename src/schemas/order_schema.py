@@ -5,8 +5,8 @@ class CreateOrder(BaseModel):
     user_id: int
 
 class CreateOrderItems(BaseModel):
-    quotation_item_id: int
     order_id: int
+    quotation_item_id: int
     iddetalhe: str
     dsdetalhe: str
     qtcompra: float

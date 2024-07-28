@@ -14,9 +14,9 @@ class OrderService:
         quotation_repo = OrdersRepository()
         return quotation_repo.find_by_id(order_id)[0]
 
-    def find_by_user_id(self, user_id) -> GetOrder:
+    def find_by_user_id(self, user_id) -> int:
         quotation_repo = OrdersRepository()
-        return quotation_repo.find_by_user(user_id)[0]
+        return quotation_repo.find_by_user(user_id)
 
     def create_order(self, order: CreateOrder):
         quotation_repo = OrdersRepository()
