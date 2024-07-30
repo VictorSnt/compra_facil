@@ -4,6 +4,7 @@ import json
 from typing import List
 #app
 from src.exceptions.err import NotFoundException
+from src.repository.quotation_repository import QuotationRepository
 from src.schemas.purchase_suggestion_schema import PurchaseSuggestionSchema
 from src.calculators.purchase_suggestion_calc import PurchaseSuggestionCalc
 from src.database.redis_cache_maker import RedisConnection
@@ -19,6 +20,9 @@ class ReportService:
     def shopping_suggestion(
         self, product_ids: List[str]
     ) -> List[PurchaseSuggestionSchema]:
+        
+        quote_repo = QuotationRepository()
+        product_ids = quote_repo.filter_not_quoted_items(product_ids)
         try:
             with self.redis_conn() as redis:
                 redis_keys = [f'suggestion:{id}' for id in product_ids]
