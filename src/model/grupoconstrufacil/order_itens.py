@@ -19,6 +19,7 @@ class OrderItem(Base):
     dsdetalhe = Column(String(50), nullable=False)
     qtcompra = Column(Float, nullable=False)
     vlcompra = Column(Float, nullable=False)
+    vllastcompra = Column(Float, nullable=False)
 
     order = relationship("Order", back_populates="items")
     

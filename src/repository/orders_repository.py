@@ -18,10 +18,12 @@ class OrdersRepository:
             session = SessionMaker.own_db_session()
             result = (
                 session.query(Order)
+                .filter(Order.status == True)
                 .all()
             )
-
+            
             if not result:
+                print(result)
                 raise NotFoundException
 
             return self.__format_response(result)
@@ -182,6 +184,7 @@ class OrdersRepository:
 
     def __format_response(self, data: List[Order]):
         response = []
+        session = SessionMaker.own_db_session()
         for order in data:
             status = "Em Aberto" if order.status else "Concluido"
             user: User = order.user
@@ -204,6 +207,7 @@ class OrdersRepository:
                     order_id=item.order_id,
                     qtcompra=item.qtcompra,
                     vlcompra=item.vlcompra,
+                    vllastcompra=item.vllastcompra
                     ) for item in items if item
                 ]
             ))

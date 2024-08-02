@@ -11,6 +11,7 @@ class CreateOrderItems(BaseModel):
     dsdetalhe: str
     qtcompra: float
     vlcompra: float
+    vllastcompra: float
 
 class GetOrderItem(CreateOrderItems):
     order_item_id: int
