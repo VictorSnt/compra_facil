@@ -191,6 +191,10 @@ class OrdersRepository:
                 user_id=user.id,
                 user_name=user.name,
                 status=status,
+                total= round(sum([
+                        (i.vlcompra * i.qtcompra) 
+                        if i else 0 for i in items
+                    ]), 2),
                 items=[
                     GetOrderItem(
                     quotation_item_id=item.quotation_item_id,

@@ -20,6 +20,7 @@ class GetOrder(CreateOrder):
     order_id: int
     user_name: str
     status: str
+    total: float
     items: List[GetOrderItem]
 
 
