@@ -25,13 +25,7 @@ class ProductService:
 
         if not response:
             raise NotFoundException
-        print('serc')
-        return [
-            GetProduct(
-                iddetalhe=product.iddetalhe,
-                dsdetalhe=product.dsdetalhe,
-            ) for product in response
-        ]
+        return response
 
     def find_all_suppliers_products(self, fornecedor_ids):
 

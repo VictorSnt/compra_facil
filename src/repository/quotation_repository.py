@@ -14,7 +14,7 @@ class QuotationRepository:
         session = None
         try:
             session = SessionMaker.own_db_session()
-            result = session.query(Quotation).all()
+            result = session.query(Quotation).filter(Quotation.status == True).all()
             if not result:
                 raise NotFoundException
 

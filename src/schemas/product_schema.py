@@ -4,7 +4,7 @@ from pydantic import BaseModel
 class GetProduct(BaseModel):
     iddetalhe: str
     dsdetalhe: str
-    bla: None|float = None
+    cdprincipal: str
     
 class GetProductWithStock(BaseModel):
     iddetalhe: str

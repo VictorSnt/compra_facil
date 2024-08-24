@@ -31,6 +31,8 @@ class ProductRepository:
         query: Query = self.session.query(self.model)
         conditions = []
         result = []
+        query = query.filter(self.model.stdetalheativo == True)
+
         if grupo_filter:
             query = query.join(
                 self.model_2,
@@ -42,16 +44,17 @@ class ProductRepository:
             conditions.append(self.model.idfamilia.in_(familia_filter))
 
         if conditions:
-            query = query.filter(self.model.stdetalheativo == True)
             query = query.filter(or_(*conditions))
-            result: List[Product] = query.all()
         
         if supplier_ids:
             supp_result = self.find_products_by_suppliers(supplier_ids)
-            if result:
-                result += supp_result
-            else: 
+
+            if conditions:
+                result = supp_result + query.all()
+            else:
                 result = supp_result
+        else: 
+            result = query.all()
 
         self.session.close()
         return result
