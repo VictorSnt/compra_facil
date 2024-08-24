@@ -8,7 +8,10 @@ class Family(Base):
     __table_args__ = {'schema': 'wshop'}
     idfamilia = Column(String, primary_key=True)
     dsfamilia = Column(String)
-    products = relationship("Product", back_populates="family", primaryjoin="Product.idfamilia == Family.idfamilia")
- 
+    products = relationship(
+        "Product", back_populates="family", 
+        primaryjoin="Product.idfamilia == Family.idfamilia"
+    )
+    
     def __repr__(self):
         return f"<Family(id={self.idfamilia} ds={self.dsfamilia})>"

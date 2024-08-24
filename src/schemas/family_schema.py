@@ -1,7 +1,6 @@
 from pydantic import BaseModel
 
-
-class GetFamily(BaseModel):
+class FamilyDTO(BaseModel):
     id: str
     name: str
     

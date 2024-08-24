@@ -11,7 +11,7 @@ class SessionMaker:
     @classmethod
     def alterdata_session(cls) -> Session:
 
-        ALTERDATA_DB_URI = getenv('ALTERDATA_DB_URI')
+        ALTERDATA_DB_URI = getenv('ALTERDATA_DB_URI', '')
         engine = create_engine(ALTERDATA_DB_URI)
         new_session = sessionmaker(bind=engine)
         session = new_session()
@@ -20,7 +20,7 @@ class SessionMaker:
     @classmethod
     def own_db_session(cls) -> Session:
 
-        WEBSITE_DB_URI = getenv('WEBSITE_DB_URI')
+        WEBSITE_DB_URI = getenv('WEBSITE_DB_URI', '')
         engine = create_engine(WEBSITE_DB_URI)
         new_session = sessionmaker(bind=engine)
         session = new_session()

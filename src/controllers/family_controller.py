@@ -4,7 +4,7 @@ from typing import List
 from fastapi import APIRouter, Query, Depends, Path
 #app
 from src.factory.family_service_factory import FamilyServiceFactory
-from src.schemas.family_schema import GetFamily
+from src.schemas.family_schema import FamilyDTO
 from src.services.family_service import FamilyService
 
 
@@ -14,7 +14,7 @@ class FamilyController:
     router = APIRouter(prefix='/family')
 
     @staticmethod
-    @router.get('/', response_model=List[GetFamily])
+    @router.get('/', response_model=List[FamilyDTO])
     def get_familias(service: FamilyService = Depends(
         FamilyServiceFactory.build_default_service
     )):
@@ -22,7 +22,7 @@ class FamilyController:
         return service.find_all()
 
     @staticmethod
-    @router.get('/sem_@', response_model=List[GetFamily])
+    @router.get('/sem_@', response_model=List[FamilyDTO])
     def get_without_special_characters(
         service: FamilyService = Depends(
             FamilyServiceFactory.build_default_service
@@ -33,7 +33,7 @@ class FamilyController:
         return service.find_all_without_special_characters(ids)
 
     @staticmethod
-    @router.get('/{id}', response_model=List[GetFamily])
+    @router.get('/{id}', response_model=List[FamilyDTO])
     def find_by_id(
         service: FamilyService = Depends(
             FamilyServiceFactory.build_default_service),

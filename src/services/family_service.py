@@ -3,7 +3,7 @@ from fastapi import APIRouter
 
 from src.exceptions.err import NotFoundException
 from src.repository.family_repository import FamilyRepository
-from src.schemas.family_schema import GetFamily
+from src.schemas.family_schema import FamilyDTO
 
 router = APIRouter()
 
@@ -13,17 +13,12 @@ class FamilyService:
     def __init__(self, repository: FamilyRepository) -> None:
         self.repo = repository
     
-    def find_all(self):
+    def find_all(self) -> List[FamilyDTO]:
         
-        response = self.repo.find_all()
+        response: List[FamilyDTO] = self.repo.find_all()
         
         if not response:
             raise NotFoundException
-        
-        return [
-            GetFamily(id=family.idfamilia, name=family.dsfamilia) 
-            for family in response
-        ]
 
     def find_all_without_special_characters(self, ids):
         
@@ -33,7 +28,7 @@ class FamilyService:
             raise NotFoundException
         
         return [
-            GetFamily(id=family.idfamilia, name=family.dsfamilia) 
+            FamilyDTO(id=family.idfamilia, name=family.dsfamilia) 
             for family in response
         ]
 
@@ -45,6 +40,6 @@ class FamilyService:
             raise NotFoundException
         
         return [
-            GetFamily(id=family.idfamilia, name=family.dsfamilia) 
+            FamilyDTO(id=family.idfamilia, name=family.dsfamilia) 
             for family in response
         ]

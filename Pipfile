@@ -11,6 +11,7 @@ uvicorn = "*"
 openpyxl = "*"
 redis = "*"
 mysqlclient = "*"
+mypy = "*"
 
 [dev-packages]
 

@@ -16,7 +16,6 @@ class CreateOrderItems(BaseModel):
 class GetOrderItem(CreateOrderItems):
     order_item_id: int
 
-
 class GetOrder(CreateOrder):
     order_id: int
     user_name: str
